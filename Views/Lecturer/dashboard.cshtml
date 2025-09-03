@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["Title"] = "Lecturer Dashboard";
+    var username = TempData["Username"] as string ?? "Lecturer";
+}
+
+<style>
+    .dashboard-box {
+        max-width: 600px;
+        margin: auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+        .dashboard-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-box .btn {
+            width: 100%;
+            margin: 10px 0;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+</style>
+
+<div class="dashboard-box mt-5">
+    <h2>Welcome, @username</h2>
+    <p>Select an option below:</p>
+
+    <a class="btn btn-primary" asp-controller="Lecturer" asp-action="SubmitClaim">Submit New Claim</a>
+    <a class="btn btn-secondary" asp-controller="Lecturer" asp-action="ViewClaims">View Submitted Claims</a>
+    <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Log Out</a>
+</div>
+

@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    var role = ViewBag.Role as string;
+}
+
+<style>
+    .login-box {
+        max-width: 500px;
+        margin: auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+        .login-box h2 {
+            background-color: #c82333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-box label {
+            font-weight: bold;
+        }
+
+        .login-box .form-control {
+            border-radius: 8px;
+        }
+
+        .login-box .btn {
+            background-color: #c82333;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+
+
+    body {
+        background-color: #121212;
+        
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+
+    .return-btn {
+        background-color: #6c757d;
+        color: white;
+        border-radius: 8px;
+        padding: 6px 12px;
+        text-decoration: none;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+</style>
+
+<div class="bg-danger text-white text-center py-3 mb-4">
+    <h1>RoseBank College Monthly Claim System</h1>
+</div>
+
+<a class="return-btn" asp-controller="Home" asp-action="Index">Return</a>
+
+<div class="login-box mt-5">
+    <h2>Please Enter Your Details</h2>
+    <form asp-action="Login" method="post">
+        <input type="hidden" name="role" value="@role" />
+
+        <div class="form-group mb-3">
+            <label for="username">Username</label>
+            <input type="text" name="username" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="employeeNumber">Employee Number</label>
+            <input type="text" name="employeeNumber" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="email">Email</label>
+            <input type="email" name="email" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn mt-3">Log In</button>
+    </form>
+</div>

@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "FirstContact";
+}
+
+<style>
+
+    body {
+        background-color: #121212;
+        color: #f1f1f1;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container, .dashboard-box, .claim-form {
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+
+    h1, h2, h3 {
+        color: #ffffff;
+    }
+
+    .btn-primary, .btn-success, .btn-danger {
+        background-color: #c82333;
+        border: none;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #444;
+        color: white;
+    }
+
+    .role-btn {
+        width: 200px;
+        height: 60px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 12px;
+        transition: transform 0.2s ease;
+    }
+
+        .role-btn:hover {
+            transform: scale(1.05);
+        }
+
+
+    
+</style>
+
+<div class="bg-danger text-white text-center py-3 mb-4">
+    <h1>RoseBank College Monthly Claim System</h1>
+</div>
+
+
+<div class="container text-center">
+    <h2 class="text-white mb-3">Select Your Role</h2>
+    <div class="d-flex justify-content-center gap-4 flex-wrap">
+        <a class="btn btn-primary role-btn" asp-controller="Home" asp-action="Login" asp-route-role="Lecturer">Lecturer</a>
+        <a class="btn btn-success role-btn" asp-controller="Home" asp-action="Login" asp-route-role="Coordinator">Coordinator</a>
+        <a class="btn btn-danger role-btn" asp-controller="Home" asp-action="Login" asp-route-role="Manager">Manager</a>
+    </div>
+</div>
+
+
+

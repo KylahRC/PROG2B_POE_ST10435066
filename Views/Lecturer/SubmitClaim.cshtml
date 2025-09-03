@@ -1,0 +1,107 @@
+﻿@{
+    ViewData["Title"] = "Submit Claim";
+}
+
+<style>
+    .claim-form {
+        max-width: 600px;
+        margin: auto;
+        padding: 30px;
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+        .claim-form h2 {
+            background-color: #c82333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .claim-form label {
+            font-weight: bold;
+        }
+
+        .claim-form .form-control {
+            border-radius: 8px;
+        }
+
+        .claim-form .btn {
+            background-color: #c82333;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .claim-form .cancel-btn {
+            background-color: #6c757d;
+            margin-top: 10px;
+        }
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>
+
+<div class="claim-form mt-5">
+    <h2>Submit Monthly Claim</h2>
+    <form asp-action="SubmitClaim" method="post">
+        <div class="form-group mb-3">
+            <label for="month">This claim is for the month of:</label>
+            <select id="month" name="month" class="form-control">
+                <option value="">-- Select Month --</option>
+                <option>January</option>
+                <option>February</option>
+                <option>March</option>
+                <option>April</option>
+                <option>May</option>
+                <option>June</option>
+                <option>July</option>
+                <option>August</option>
+                <option>September</option>
+                <option>October</option>
+                <option>November</option>
+                <option>December</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="claimType">I am claiming for:</label>
+            <select id="claimType" name="claimType" class="form-control">
+                <option value="">-- Select Claim Type --</option>
+                <option>Marking</option>
+                <option>Moderation</option>
+                <option>Invigilation</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="hours">I am claiming:</label>
+            <input type="text" id="hours" name="hours" class="form-control" placeholder="e.g. 4 hrs" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="rate">Hourly Rate (Rands):</label>
+            <input type="text" id="rate" name="rate" class="form-control" placeholder="e.g. 250" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Upload Supporting Evidence:</label>
+            <div class="form-control text-muted">Name of document would show here</div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="notes">Additional Notes:</label>
+            <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+        </div>
+
+        <button type="submit" class="btn">Submit Claim</button>
+        <a class="btn cancel-btn" asp-controller="Lecturer" asp-action="Dashboard">Cancel</a>
+    </form>
+</div>

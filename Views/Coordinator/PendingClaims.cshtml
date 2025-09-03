@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Pending Claims";
+}
+
+<style>
+
+</style>
+
+<div class="container mt-5">
+    <h2>Pending Claims</h2>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+            <tr>
+                <th>Claim ID</th>
+                <th>Lecturer</th>
+                <th>Type</th>
+                <th>Month</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in new[] {
+                        new { Id = 101, Lecturer = "K. Daniels", Type = "Marking", Month = "August" },
+                        new { Id = 102, Lecturer = "T. Mokoena", Type = "Moderation", Month = "August" }
+                        })
+            {
+                <tr>
+                    <td>@claim.Id</td>
+                    <td>@claim.Lecturer</td>
+                    <td>@claim.Type</td>
+                    <td>@claim.Month</td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-controller="Coordinator" asp-action="ReviewClaim" asp-route-id="@claim.Id">View Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a class="btn btn-secondary mt-3" asp-controller="Coordinator" asp-action="Dashboard">Back to Dashboard</a>
+</div>
