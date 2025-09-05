@@ -12,8 +12,8 @@ using MonthlyClaimsSystem.Data;
 namespace MonthlyClaimsSystem.Migrations
 {
     [DbContext(typeof(ClaimDbContext))]
-    [Migration("20250905081250_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250905111010_SecondCreate")]
+    partial class SecondCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,10 @@ namespace MonthlyClaimsSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EmployeeNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("HourlyRate")
                         .HasColumnType("decimal(18,2)");
 
@@ -58,29 +62,52 @@ namespace MonthlyClaimsSystem.Migrations
                     b.Property<DateTime>("SubmittedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("ClaimId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("EmployeeNumber");
 
                     b.ToTable("Claims");
                 });
 
-            modelBuilder.Entity("MonthlyClaimsSystem.Models.User", b =>
+            modelBuilder.Entity("MonthlyClaimsSystem.Models.ClaimStatusLog", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ClaimId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClaimId");
+
+                    b.ToTable("ClaimStatusLogs");
+                });
+
+            modelBuilder.Entity("MonthlyClaimsSystem.Models.User", b =>
+                {
+                    b.Property<string>("EmployeeNumber")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EmployeeNumber")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -88,11 +115,15 @@ namespace MonthlyClaimsSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("EmployeeNumber");
 
                     b.ToTable("Users");
                 });
@@ -100,12 +131,33 @@ namespace MonthlyClaimsSystem.Migrations
             modelBuilder.Entity("MonthlyClaimsSystem.Models.Claim", b =>
                 {
                     b.HasOne("MonthlyClaimsSystem.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithMany("Claims")
+                        .HasForeignKey("EmployeeNumber")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MonthlyClaimsSystem.Models.ClaimStatusLog", b =>
+                {
+                    b.HasOne("MonthlyClaimsSystem.Models.Claim", "Claim")
+                        .WithMany("ClaimStatusLogs")
+                        .HasForeignKey("ClaimId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Claim");
+                });
+
+            modelBuilder.Entity("MonthlyClaimsSystem.Models.Claim", b =>
+                {
+                    b.Navigation("ClaimStatusLogs");
+                });
+
+            modelBuilder.Entity("MonthlyClaimsSystem.Models.User", b =>
+                {
+                    b.Navigation("Claims");
                 });
 #pragma warning restore 612, 618
         }

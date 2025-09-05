@@ -44,12 +44,13 @@ namespace MonthlyClaimsSystem.Controllers
 
         [HttpPost]
         public IActionResult Login(string role, string username, string employeeNumber, string email)
+
         {
 
 
             var user = _context.Users.FirstOrDefault(u =>
             u.Username.ToLower().Trim() == username.ToLower().Trim() &&
-            u.EmployeeNumber.ToLower().Trim() == employeeNumber.ToLower().Trim() &&
+            u.EmployeeNumber.Trim() == employeeNumber.Trim() &&
             u.Email.ToLower().Trim() == email.ToLower().Trim() &&
             u.Role.ToLower().Trim() == role.ToLower().Trim());
 

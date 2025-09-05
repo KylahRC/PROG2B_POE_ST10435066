@@ -57,12 +57,13 @@
 
 @model List<MonthlyClaimsSystem.Models.Claim>
 
+
 @foreach (var claim in Model)
 {
     <div class="claim-card">
         <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
         <div class="claim-meta">
-            <strong>Lecturer:</strong> @ViewBag.Username<br />
+            <strong>Lecturer:</strong> @claim.User.Name @claim.User.Surname<br />
             <strong>Month:</strong> @claim.ClaimMonth<br />
             <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
             <strong>Notes:</strong> @claim.Notes
@@ -71,12 +72,9 @@
         <div class="status @(claim.Status.ToLower() == "approved" ? "status-approved" : claim.Status.ToLower() == "denied" ? "status-denied" : "status-pending")">
             @claim.Status
         </div>
-
-        <div class="claim-actions mt-3">
-            <a class="btn btn-outline-light btn-sm" asp-action="ReviewClaimLecturer" asp-route-id="@claim.ClaimId">View Details</a>
-        </div>
     </div>
 }
+
 
 <a class="btn cancel-btn mt-4" asp-controller="Lecturer" asp-action="Dashboard">Return</a>
 

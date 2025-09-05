@@ -35,23 +35,24 @@ public class LecturerController : Controller
 
     public IActionResult ViewClaims()
     {
-        var username = HttpContext.Session.GetString("Username");
+        var employeeNumber = HttpContext.Session.GetString("Username"); // now using EmployeeNumber as the key
 
-
-        var user = _context.Users.FirstOrDefault(u => u.Username == username);
+        var user = _context.Users.FirstOrDefault(u => u.Username == employeeNumber);
         if (user == null || user.Role != "Lecturer")
         {
             return RedirectToAction("Index", "Home");
         }
 
         var claims = _context.Claims
-            .Where(c => c.UserId == user.UserId)
+            .Include(c => c.User) // make sure this is included so you can access Name/Surname
+            .Where(c => c.EmployeeNumber == user.EmployeeNumber)
             .OrderByDescending(c => c.SubmittedAt)
             .ToList();
 
-        ViewBag.Username = user.Username;
+        ViewBag.FullName = $"{user.Name} {user.Surname}";
         return View(claims);
     }
+
 
 
     public IActionResult Dashboard()
