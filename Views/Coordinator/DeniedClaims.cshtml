@@ -1,2 +1,54 @@
-﻿<h2>Denied Claims</h2>
-<p>This page will show claims that were rejected.</p>
+﻿<style>
+    .claim-card {
+        background-color: white;
+        border-left: 6px solid #c82333;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        color: #f1f1f1;
+    }
+
+    .claim-card h4 {
+        color: black;
+        margin-bottom: 10px;
+    }
+
+    .claim-card .claim-meta {
+        color: dimgray;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .status {
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        display: inline-block;
+        background-color: #dc3545;
+        color: white;
+        margin-top: 10px;
+    }
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-white mb-4">Denied Claims</h2>
+
+    <div class="claim-card">
+        <h4>Claim #104 — Moderation</h4>
+        <div class="claim-meta">
+            <strong>Lecturer:</strong> K. Daniels<br />
+            <strong>Month:</strong> June<br />
+            <strong>Hours:</strong> 2 hrs at R250/hr<br />
+            <strong>Notes:</strong> Incomplete documentation
+        </div>
+        <div class="status">Denied</div>
+    </div>
+
+    <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Dashboard">Back to Dashboard</a>
+</div>

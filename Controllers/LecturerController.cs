@@ -19,6 +19,13 @@ public class LecturerController : Controller
         return RedirectToAction("Dashboard");
     }
 
+    public IActionResult ReviewClaimLecturer(int id)
+    {
+        ViewBag.ClaimId = id;
+        
+        return View();
+    }
+
 
     public IActionResult ViewClaims()
     {

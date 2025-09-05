@@ -1,42 +1,73 @@
-﻿@{
-    ViewData["Title"] = "Pending Claims";
-}
+﻿<style>
+    .claim-card {
+        background-color: white;
+        border-left: 6px solid #c82333;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        color: #f1f1f1;
+    }
 
-<style>
+        .claim-card h4 {
+            color: black;
+            margin-bottom: 10px;
+        }
 
+        .claim-card .claim-meta {
+            color: dimgray;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+    .claim-card .status {
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    .status-approved {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .status-pending {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    .status-denied {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .claim-actions a {
+        margin-right: 10px;
+    }
+
+    
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
 </style>
 
-<div class="container mt-5">
-    <h2>Pending Claims</h2>
+<div class="claim-card">
+    <h4>Claim #102 — Marking</h4>
+    <div class="claim-meta">
+        <strong>Lecturer:</strong> K. Daniels<br />
+        <strong>Month:</strong> August<br />
+        <strong>Hours:</strong> 4 hrs at R250/hr<br />
+        <strong>Notes:</strong> Final exam scripts
+    </div>
+    <div class="status status-pending">Pending</div>
 
-    <table class="table table-bordered mt-4">
-        <thead>
-            <tr>
-                <th>Claim ID</th>
-                <th>Lecturer</th>
-                <th>Type</th>
-                <th>Month</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var claim in new[] {
-                        new { Id = 101, Lecturer = "K. Daniels", Type = "Marking", Month = "August" },
-                        new { Id = 102, Lecturer = "T. Mokoena", Type = "Moderation", Month = "August" }
-                        })
-            {
-                <tr>
-                    <td>@claim.Id</td>
-                    <td>@claim.Lecturer</td>
-                    <td>@claim.Type</td>
-                    <td>@claim.Month</td>
-                    <td>
-                        <a class="btn btn-primary btn-sm" asp-controller="Coordinator" asp-action="ReviewClaim" asp-route-id="@claim.Id">View Details</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <a class="btn btn-secondary mt-3" asp-controller="Coordinator" asp-action="Dashboard">Back to Dashboard</a>
+    <div class="claim-actions mt-3">
+        <a class="btn btn-outline-light btn-sm" asp-action="ReviewClaim" asp-route-id="102">View Details</a>
+        <!-- Optional for Coordinator -->
+        <a class="btn btn-success btn-sm" asp-action="ApproveClaim" asp-route-id="102">Approve</a>
+        <a class="btn btn-danger btn-sm" asp-action="DenyClaim" asp-route-id="102">Deny</a>
+    </div>
 </div>

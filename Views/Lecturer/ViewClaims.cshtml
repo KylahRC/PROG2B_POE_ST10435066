@@ -1,55 +1,74 @@
-﻿@{
-    ViewData["Title"] = "View Submitted Claims";
-}
+﻿<style>
+    .claim-card {
+        background-color: white;
+        border-left: 6px solid #c82333;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        color: #f1f1f1;
+    }
 
-<style>
-    .accordion-button {
+    .claim-card h4 {
+        color: black;
+        margin-bottom: 10px;
+    }
+
+    .claim-card .claim-meta {
+        color: dimgray;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .claim-card .status {
         font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 8px;
+        display: inline-block;
     }
 
-    .claim-entry {
-        padding: 10px;
-        border-bottom: 1px solid #dee2e6;
+    .status-approved {
+        background-color: #28a745;
+        color: white;
     }
 
-        .claim-entry:last-child {
-            border-bottom: none;
-        }
+    .status-pending {
+        background-color: #ffc107;
+        color: black;
+    }
 
+    .status-denied {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .claim-actions a {
+        color: black;
+        background-color: white;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
 </style>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Your Submitted Claims</h2>
+<div class="claim-card">
+    <h4>Claim #102 — Marking</h4>
+    <div class="claim-meta">
+        <strong>Lecturer:</strong> K. Daniels<br />
+        <strong>Month:</strong> August<br />
+        <strong>Hours:</strong> 4 hrs at R250/hr<br />
+        <strong>Notes:</strong> Final exam scripts
+    </div>
+    <div class="status status-pending">Pending</div>
 
-    <div class="accordion" id="claimsAccordion">
-        @foreach (var month in new[] { "August", "July", "June" })
-        {
-            var collapseId = $"collapse{month}";
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading@month">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId">
-                        @month 2025
-                    </button>
-                </h2>
-                <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="heading@month" data-bs-parent="#claimsAccordion">
-                    <div class="accordion-body">
-                        <div class="claim-entry">
-                            <strong>Claim Type:</strong> Marking<br />
-                            <strong>Hours:</strong> 4 hrs<br />
-                            <strong>Rate:</strong> R250/hr<br />
-                            <strong>Status:</strong> Approved
-                        </div>
-                        <div class="claim-entry">
-                            <strong>Claim Type:</strong> Moderation<br />
-                            <strong>Hours:</strong> 2 hrs<br />
-                            <strong>Rate:</strong> R250/hr<br />
-                            <strong>Status:</strong> Pending
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
+    <div class="claim-actions mt-3">
+        <a class="btn btn-outline-light btn-sm" asp-action="ReviewClaimLecturer" asp-route-id="102">View Details</a>
+        
     </div>
 
-    <a class="btn btn-secondary mt-4" asp-controller="Lecturer" asp-action="Dashboard">Back to Dashboard</a>
+    <a class="btn cancel-btn" asp-controller="Lecturer" asp-action="Dashboard">Return</a>
 </div>

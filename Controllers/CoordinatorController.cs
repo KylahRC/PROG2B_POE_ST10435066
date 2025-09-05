@@ -22,11 +22,7 @@ public class CoordinatorController : Controller
         return View();
     }
 
-    public IActionResult ReviewClaim(int id)
-    {
-        ViewBag.ClaimId = id;
-        return View();
-    }
+    
 
     [HttpPost]
     public IActionResult ApproveClaim(int id)
@@ -41,5 +37,12 @@ public class CoordinatorController : Controller
         // Update claim status to Denied (mocked for now)
         return RedirectToAction("PendingClaims");
     }
+
+    public IActionResult ReviewClaim(int id)
+    {
+        ViewBag.ClaimId = id;
+        return View();
+    }
+
 
 }
