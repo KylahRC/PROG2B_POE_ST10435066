@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using MonthlyClaimsSystem.Data;
+
 namespace MonthlyClaimsSystem
 {
     public class Program
@@ -8,6 +11,9 @@ namespace MonthlyClaimsSystem
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<ClaimDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
