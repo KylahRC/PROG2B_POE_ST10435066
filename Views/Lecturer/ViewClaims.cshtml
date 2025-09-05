@@ -55,20 +55,28 @@
     }
 </style>
 
-<div class="claim-card">
-    <h4>Claim #102 — Marking</h4>
-    <div class="claim-meta">
-        <strong>Lecturer:</strong> K. Daniels<br />
-        <strong>Month:</strong> August<br />
-        <strong>Hours:</strong> 4 hrs at R250/hr<br />
-        <strong>Notes:</strong> Final exam scripts
-    </div>
-    <div class="status status-pending">Pending</div>
+@model List<MonthlyClaimsSystem.Models.Claim>
 
-    <div class="claim-actions mt-3">
-        <a class="btn btn-outline-light btn-sm" asp-action="ReviewClaimLecturer" asp-route-id="102">View Details</a>
-        
-    </div>
+@foreach (var claim in Model)
+{
+    <div class="claim-card">
+        <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
+        <div class="claim-meta">
+            <strong>Lecturer:</strong> @ViewBag.Username<br />
+            <strong>Month:</strong> @claim.ClaimMonth<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
+            <strong>Notes:</strong> @claim.Notes
+        </div>
 
-    <a class="btn cancel-btn" asp-controller="Lecturer" asp-action="Dashboard">Return</a>
-</div>
+        <div class="status @(claim.Status.ToLower() == "approved" ? "status-approved" : claim.Status.ToLower() == "denied" ? "status-denied" : "status-pending")">
+            @claim.Status
+        </div>
+
+        <div class="claim-actions mt-3">
+            <a class="btn btn-outline-light btn-sm" asp-action="ReviewClaimLecturer" asp-route-id="@claim.ClaimId">View Details</a>
+        </div>
+    </div>
+}
+
+<a class="btn cancel-btn mt-4" asp-controller="Lecturer" asp-action="Dashboard">Return</a>
+

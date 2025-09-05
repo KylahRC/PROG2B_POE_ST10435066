@@ -8,12 +8,15 @@ namespace MonthlyClaimsSystem
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddSession();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddDbContext<ClaimDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
             var app = builder.Build();
 
@@ -35,6 +38,10 @@ namespace MonthlyClaimsSystem
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.UseSession();
+            
+
 
             app.Run();
         }

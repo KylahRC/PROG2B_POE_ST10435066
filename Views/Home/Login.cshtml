@@ -61,12 +61,21 @@
     <h1>RoseBank College Monthly Claim System</h1>
 </div>
 
+@if (TempData["LoginError"] != null)
+{
+    <div class="alert alert-danger">@TempData["LoginError"]</div>
+    @if (TempData["Debug"] != null)
+    {
+        <div class="alert alert-info">@TempData["Debug"]</div>
+    }
+
+}
 
 
 <div class="login-box mt-5">
     <h2>Please Enter Your Details</h2>
     <form asp-action="Login" method="post">
-        <input type="hidden" name="role" value="@role" />
+        <input type="hidden" name="role" value="@ViewBag.Role" />
 
         <div class="form-group mb-3">
             <label for="username">Username</label>
@@ -85,6 +94,6 @@
 
         <button type="submit" class="btn btn-login mt-3">Log In</button>
         <a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">Return</a>
-
+      
     </form>
 </div>
