@@ -4,45 +4,41 @@ public class CoordinatorController : Controller
 {
     public IActionResult Dashboard()
     {
-        return View();
+        return View(); // Coordinator dashboard
     }
 
     public IActionResult PendingClaims()
     {
-        return View();
+        return View(); // View pending claims
     }
 
     public IActionResult ApprovedClaims()
     {
-        return View();
+        return View(); // View approved claims
     }
 
     public IActionResult DeniedClaims()
     {
-        return View();
+        return View(); // View denied claims
     }
-
-    
 
     [HttpPost]
     public IActionResult ApproveClaim(int id)
     {
-        // Update claim status to Approved (mocked for now)
+        // Simulate approval — no backend logic
         return RedirectToAction("PendingClaims");
     }
 
     [HttpPost]
     public IActionResult DenyClaim(int id)
     {
-        // Update claim status to Denied (mocked for now)
+        // Simulate denial — no backend logic
         return RedirectToAction("PendingClaims");
     }
 
     public IActionResult ReviewClaim(int id)
     {
-        ViewBag.ClaimId = id;
-        return View();
+        ViewBag.ClaimId = id; // Optional: pass ID for display only
+        return View(); // Review claim details
     }
-
-
 }

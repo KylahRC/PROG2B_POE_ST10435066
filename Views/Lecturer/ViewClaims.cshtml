@@ -1,4 +1,9 @@
-﻿<style>
+﻿@{
+    ViewData["Title"] = "Claims System - Lecturer: View Claims";
+    
+}
+
+<style>
     .claim-card {
         background-color: white;
         border-left: 6px solid #c82333;
@@ -55,26 +60,37 @@
     }
 </style>
 
-@model List<MonthlyClaimsSystem.Models.Claim>
-
-
-@foreach (var claim in Model)
-{
-    <div class="claim-card">
-        <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
-        <div class="claim-meta">
-            <strong>Lecturer:</strong> @claim.User.Name @claim.User.Surname<br />
-            <strong>Month:</strong> @claim.ClaimMonth<br />
-            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
-            <strong>Notes:</strong> @claim.Notes
-        </div>
-
-        <div class="status @(claim.Status.ToLower() == "approved" ? "status-approved" : claim.Status.ToLower() == "denied" ? "status-denied" : "status-pending")">
-            @claim.Status
-        </div>
+<div class="claim-card">
+    <h4>Claim #101 — Exam Marking</h4>
+    <div class="claim-meta">
+        <strong>Lecturer:</strong> Thabo Mokoena<br />
+        <strong>Month:</strong> August<br />
+        <strong>Hours:</strong> 12 hrs at R250/hr<br />
+        <strong>Notes:</strong> Marked final-year scripts for COS3701
     </div>
-}
+    <div class="status status-approved">Approved</div>
+</div>
 
+<div class="claim-card">
+    <h4>Claim #102 — Invigilation</h4>
+    <div class="claim-meta">
+        <strong>Lecturer:</strong> Ayesha Khan<br />
+        <strong>Month:</strong> September<br />
+        <strong>Hours:</strong> 6 hrs at R200/hr<br />
+        <strong>Notes:</strong> Supervised midterm exams
+    </div>
+    <div class="status status-pending">Pending</div>
+</div>
+
+<div class="claim-card">
+    <h4>Claim #103 — Consultation</h4>
+    <div class="claim-meta">
+        <strong>Lecturer:</strong> Sipho Dlamini<br />
+        <strong>Month:</strong> October<br />
+        <strong>Hours:</strong> 8 hrs at R220/hr<br />
+        <strong>Notes:</strong> Assisted students with project debugging
+    </div>
+    <div class="status status-denied">Denied</div>
+</div>
 
 <a class="btn cancel-btn mt-4" asp-controller="Lecturer" asp-action="Dashboard">Return</a>
-

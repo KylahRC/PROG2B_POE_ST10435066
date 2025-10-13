@@ -2,13 +2,12 @@
 {
     public class ClaimStatusLog
     {
-        public int Id { get; set; }
+        public int LogId { get; set; }
         public int ClaimId { get; set; }
-        public string Status { get; set; } // e.g. "Denied"
-        public string Reason { get; set; } // e.g. "Missing supporting documents"
-        public DateTime ChangedAt { get; set; }
-
-        public Claim Claim { get; set; }
+        public string ChangedBy { get; set; }
+        public string NewStatus { get; set; }
+        public DateTime ChangeDate { get; set; }
+        public string Reason { get; set; }
     }
 
 }
