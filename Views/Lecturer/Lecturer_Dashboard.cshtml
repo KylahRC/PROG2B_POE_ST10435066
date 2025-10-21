@@ -1,5 +1,6 @@
 ﻿@{
-    ViewData["Title"] = "Claims System - Coordinator: Dashboard";
+    ViewData["Title"] = "Claims System - Lecturer: Dashboard";
+    var username = TempData["Username"] as string ?? "Lecturer";
 }
 
 <style>
@@ -28,15 +29,15 @@
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
     }
+
 </style>
 
 <div class="dashboard-box mt-5">
-    <h2>Coordinator Dashboard</h2>
-    <p>Select a claim category to review:</p>
+    <h2>Welcome, @ViewBag.Username</h2>
+    <p>Select an option below:</p>
 
-    <a class="btn btn-warning" asp-controller="Coordinator" asp-action="PendingClaims">View Pending Claims</a>
-    <a class="btn btn-success" asp-controller="Coordinator" asp-action="ApprovedClaims">View Approved Claims</a>
-    <a class="btn btn-danger" asp-controller="Coordinator" asp-action="DeniedClaims">View Denied Claims</a>
-
-    <a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">Log Out</a>
+    <a class="btn btn-primary" asp-controller="Lecturer" asp-action="Lecturer_SubmitClaim">Submit New Claim</a>
+    <a class="btn btn-secondary" asp-controller="Lecturer" asp-action="Lecturer_ViewClaims">View Submitted Claims</a>
+    <a class="btn btn-danger" asp-controller="Home" asp-action="Index">Log Out</a>
 </div>
+

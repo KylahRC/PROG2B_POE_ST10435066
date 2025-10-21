@@ -26,9 +26,9 @@ namespace MonthlyClaimsSystem.Controllers
             // Simulated login — no validation, just redirect based on role
             return role switch
             {
-                "Lecturer" => RedirectToAction("Dashboard", "Lecturer"),
-                "Coordinator" => RedirectToAction("Dashboard", "Coordinator"),
-                "Manager" => RedirectToAction("Dashboard", "Manager"),
+                "Lecturer" => RedirectToAction("Lecturer_Dashboard", "Lecturer"),
+                "Coordinator" => RedirectToAction("Coordinator_Dashboard", "Coordinator"),
+                "Manager" => RedirectToAction("Manager_Dashboard", "Manager"),
                 _ => RedirectToAction("Index")
             };
         }

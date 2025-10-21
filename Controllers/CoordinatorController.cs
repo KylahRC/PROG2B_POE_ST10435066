@@ -2,22 +2,22 @@ using Microsoft.AspNetCore.Mvc;
 
 public class CoordinatorController : Controller
 {
-    public IActionResult Dashboard()
+    public IActionResult Coordinator_Dashboard()
     {
         return View(); // Coordinator dashboard
     }
 
-    public IActionResult PendingClaims()
+    public IActionResult Coordinator_PendingClaims()
     {
         return View(); // View pending claims
     }
 
-    public IActionResult ApprovedClaims()
+    public IActionResult Coordinator_ApprovedClaims()
     {
         return View(); // View approved claims
     }
 
-    public IActionResult DeniedClaims()
+    public IActionResult Coordinator_DeniedClaims()
     {
         return View(); // View denied claims
     }

@@ -1,7 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Claims System - Coordinator: View All Claims";
+    ViewData["Title"] = "Claims System - Lecturer: Review Claim";
     var claimId = ViewBag.ClaimId;
-    var role = ViewBag.Role as string ?? "Lecturer"; // Default to Lecturer if not passed
+    
 }
 
 <style>
@@ -48,6 +48,7 @@
     .btn-secondary {
         background-color: #444;
         color: white;
+        border-block-color: black;
         border: none;
     }
 </style>
@@ -63,19 +64,7 @@
     <p><strong>Rate:</strong> R250/hr</p>
     <p><strong>Notes:</strong> Completed final exam scripts</p>
 
-    @if (role == "Coordinator" || role == "Manager")
-    {
-        <form method="post" asp-action="ApproveClaim">
-            <input type="hidden" name="id" value="@claimId" />
-            <button type="submit" class="btn btn-success mt-3">Approve</button>
-        </form>
 
-        <form method="post" asp-action="DenyClaim" class="mt-2">
-            <input type="hidden" name="id" value="@claimId" />
-            <button type="submit" class="btn btn-danger">Deny</button>
-        </form>
-    }
-
-    <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="PendingClaims">Back</a>
+    <a class="btn btn-secondary mt-4" asp-controller="Lecturer" asp-action="Lecturer_ViewClaims">Back</a>
 </div>
 
