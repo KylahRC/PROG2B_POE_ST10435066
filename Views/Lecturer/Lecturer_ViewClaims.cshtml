@@ -73,14 +73,22 @@
         _ => "status-pending"
     };
 
-    <div class="claim-card">
-        <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
-        <div class="claim-meta">
-            @* <strong>Lecturer:</strong> @claim.EmployeeNumber<br /> *@
+    
+        <div class="claim-card">
+            <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
+            <div class="claim-meta">
             <strong>Month:</strong> @claim.ClaimMonth<br />
             <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
             <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
             <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
+                @if (!string.IsNullOrEmpty(claim.AttachmentPath))
+                {
+                    <strong>Attachment:</strong>
+                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
+
+                    <br />
+                }
+
             <strong>Notes:</strong> @claim.Notes
             @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
             {
@@ -100,9 +108,11 @@
                 </li>
             }
 
+
+            </div>
+            <div class="status">@claim.Status</div>
         </div>
-        <div class="status @statusClass">@claim.Status</div>
-    </div>
+    
 
     
 

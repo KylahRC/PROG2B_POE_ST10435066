@@ -11,6 +11,9 @@
         public string Notes { get; set; }
         public string Status { get; set; } = "Pending"; // Default status
         public DateTime SubmittedAt { get; set; } = DateTime.Now;
+        public string AttachmentPath { get; set; }
+        public string AttachmentName { get; set; }
+        public long? AttachmentSize { get; set; }
 
         public List<ClaimStatusLog> StatusLogs { get; set; }
 

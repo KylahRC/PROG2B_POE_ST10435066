@@ -41,41 +41,36 @@ public class LecturerController : Controller
     }
 
     [HttpPost]
-    public IActionResult SubmitClaim(string claimMonth, string claimType, decimal hoursWorked, decimal hourlyRate, string notes)
+    public IActionResult SubmitClaim(Claim claim, IFormFile supportingFile)
     {
-        var empNum = HttpContext.Session.GetString("EmployeeNumber");
-        if (string.IsNullOrEmpty(empNum))
-        {
-            TempData["Error"] = "Session expired. Please log in again.";
-            return RedirectToAction("Login", "Home");
-        }
+        claim.EmployeeNumber = HttpContext.Session.GetString("EmployeeNumber");
 
-        try
+        if (supportingFile != null && supportingFile.Length > 0)
         {
-            var claim = new Claim
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(supportingFile.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
-                EmployeeNumber = empNum,
-                ClaimMonth = claimMonth,
-                ClaimType = claimType,
-                HoursWorked = hoursWorked,
-                HourlyRate = hourlyRate,
-                Notes = notes,
-                Status = "Pending",
-                SubmittedAt = DateTime.Now
-            };
+                supportingFile.CopyTo(stream);
+            }
 
-            _context.Claims.Add(claim);
-            _context.SaveChanges();
-
-            return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
-        }
-        catch (Exception ex)
-        {
-            TempData["Error"] = "Submission failed: " + ex.Message;
+            claim.AttachmentPath = $"/uploads/{fileName}";
+            claim.AttachmentName = supportingFile.FileName;
+            claim.AttachmentSize = supportingFile.Length;
         }
 
-        return RedirectToAction("Lecturer_Dashboard");
+        claim.SubmittedAt = DateTime.Now;
+        claim.Status = "Pending";
+        _context.Claims.Add(claim);
+        _context.SaveChanges();
+
+        return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
     }
+
 
     public IActionResult ClaimConfirmation(int id)
     {
