@@ -58,6 +58,7 @@
     <h1>RoseBank College Monthly Claim System</h1>
 </div>
 
+@* We use TempData here instead of ViewBag because we want the error message to persist across a redirect that happens after a failed login attempt. *@
 @if (TempData["LoginError"] != null)
 {
     <div class="alert alert-danger">@TempData["LoginError"]</div>
@@ -69,26 +70,27 @@
 
 <div class="login-box mt-5">
     <h2>Please Enter Your Details</h2>
-    <form asp-action="Login" method="post">
-        <input type="hidden" name="role" value="@ViewBag.Role" />
+        <form asp-action="Login" method="post">
+		    @* ViewBag is basically like TempData but for the current request only so that means we can use it to pass the role 
+            from the Home/Index to Home/Login without having to use TempData which would persist for the next request as well *@
+            <input type="hidden" name="role" value="@ViewBag.Role" />
 
-        <div class="form-group mb-3">
-            <label for="username">Username</label>
-            <input type="text" name="username" class="form-control" />
-        </div>
+            <div class="form-group mb-3">
+                <label for="employeeNumber">Employee Number</label>
+                    <input type="text" name="employeeNumber" class="form-control" />
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="employeeNumber">Employee Number</label>
-            <input type="text" name="employeeNumber" class="form-control" />
-        </div>
+            <div class="form-group mb-3">
+                <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" />
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="email">Email</label>
-            <input type="email" name="email" class="form-control" />
-        </div>
+            <div class="form-group mb-3">
+                <label for="email">Email</label>
+                    <input type="email" name="email" class="form-control" />
+            </div>
 
-        <button type="submit" class="btn btn-login mt-3">Log In</button>
-        <a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">Return</a>
-      
-    </form>
+            <button type="submit" class="btn btn-login mt-3">Log In</button>
+                <a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">Return</a>
+        </form>
 </div>

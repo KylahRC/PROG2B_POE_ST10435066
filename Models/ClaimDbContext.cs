@@ -3,40 +3,67 @@ using MonthlyClaimsSystem.Models;
 
 public class ClaimDbContext : DbContext
 {
+    #region Public Constructors
+
     public ClaimDbContext(DbContextOptions<ClaimDbContext> options) : base(options)
     {
     }
 
-    public DbSet<User> Users { get; set; }
+    #endregion Public Constructors
+
+    #region Public Properties
+
     public DbSet<Claim> Claims { get; set; }
-
     public DbSet<ClaimStatusLog> ClaimStatusLogs { get; set; }
+    public DbSet<User> Users { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.Entity<ClaimStatusLog>()
-            .HasKey(c => c.LogId);
+    #endregion Public Properties
 
-        modelBuilder.Entity<Claim>()
-            .Property(c => c.HourlyRate)
-            .HasPrecision(6, 2);
+    #region Protected Methods
 
-        modelBuilder.Entity<Claim>()
-            .Property(c => c.HoursWorked)
-            .HasPrecision(5, 2);
+        #region Overrides of DbContext
 
-        modelBuilder.Entity<ClaimStatusLog>().ToTable("ClaimStatusLog");
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                //Sets LogId as the primary key for the ClaimStatusLog table.
+                //Ensures each status log entry is uniquely identifiable (code gets upset without this idk man).
+                modelBuilder.Entity<ClaimStatusLog>()
+                    .HasKey(c => c.LogId);
 
-        modelBuilder.Entity<ClaimStatusLog>()
-            .HasOne(log => log.ChangedByUser)
-            .WithMany()
-            .HasForeignKey(log => log.ChangedBy)
-            .HasPrincipalKey(user => user.EmployeeNumber);
+                //Limits HourlyRate to 6 digits total, 2 after the decimal to match the database schema.
+                //It didn't want to submit the data before adding this bc of the "precision mismatch".
+                modelBuilder.Entity<Claim>()
+                    .Property(c => c.HourlyRate)
+                    .HasPrecision(6, 2);
 
-        modelBuilder.Entity<Claim>()
-            .HasOne(c => c.Lecturer)
-            .WithMany()
-            .HasForeignKey(c => c.EmployeeNumber)
-            .HasPrincipalKey(u => u.EmployeeNumber);
-    }
+                //Limits HoursWorked to 5 digits total, 2 after the decimal to match the database schema.
+                //It didn't want to submit the data before adding this bc of the "precision mismatch".
+                modelBuilder.Entity<Claim>()
+                    .Property(c => c.HoursWorked)
+                    .HasPrecision(5, 2);
+
+                //Maps the ClaimStatusLog entity to a table (in the database) with the same name.
+                //Ensures the table name matches the entity name (it kept adding an s to the end, no clue why but this fixed it).
+                modelBuilder.Entity<ClaimStatusLog>().ToTable("ClaimStatusLog");
+
+                //Links each status log to the coordinator who made the change.
+                //Enables traceability of who updated a claim, using EmployeeNumber as the join key (so lecturers and coords can see who did what so no drama).
+                modelBuilder.Entity<ClaimStatusLog>()
+                    .HasOne(log => log.ChangedByUser)
+                    .WithMany()
+                    .HasForeignKey(log => log.ChangedBy)
+                    .HasPrincipalKey(user => user.EmployeeNumber);
+
+                //Links each claim to the lecturer who submitted it.
+                //Establishes a relationship between claims and users, again using EmployeeNumber for consistency (its a pk, makes sense to use it). 
+                modelBuilder.Entity<Claim>()
+                    .HasOne(c => c.Lecturer)
+                    .WithMany()
+                    .HasForeignKey(c => c.EmployeeNumber)
+                    .HasPrincipalKey(u => u.EmployeeNumber);
+            }
+
+        #endregion Overrides of DbContext
+
+    #endregion Protected Methods
 }

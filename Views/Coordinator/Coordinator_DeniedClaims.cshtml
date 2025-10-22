@@ -48,9 +48,6 @@
         transition: background-color 0.3s ease;
     }
 
-
-
-
     body {
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
@@ -72,10 +69,7 @@
                 <strong>Notes:</strong> @claim.Notes
                 @if (!string.IsNullOrEmpty(claim.AttachmentPath))
                 {
-                    <strong>Attachment:</strong>
-                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
-
-                    <br />
+                    <strong>Attachment:</strong><a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a><br />
                 }
                 @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
                 {
@@ -83,19 +77,16 @@
                     ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
                     : log.ChangedBy;
 
-                    <li class="list-group-item">
-                        <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+                    <li class="list-group-item"><strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+
                         @if (!string.IsNullOrWhiteSpace(log.Reason))
                         {
                             <br />
-                            <strong>Reason:</strong>
-
-                            @log.Reason
+                            <strong>Reason:</strong>@log.Reason
                         }
                     </li>
                 }
             </div>
-
 
             <div class="mt-3">
                 <a class="override-btn" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review/Override</a>

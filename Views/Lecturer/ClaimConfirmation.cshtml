@@ -3,17 +3,24 @@
 <div class="claim-form mt-5">
     <h2>Claim Submitted Successfully</h2>
     <p>Your claim has been saved with the following details:</p>
-
+    
+    @* Displays the information that the lecturer just submitted. *@
+    @* Acts like a double check and visual confirmation that the system worked. *@
+    
     <ul class="list-group">
+        <li class="list-group-item"><strong>Submitted At:</strong> @Model.SubmittedAt.ToString("f")</li>
         <li class="list-group-item"><strong>Employee Number:</strong> @Model.EmployeeNumber</li>
         <li class="list-group-item"><strong>Month:</strong> @Model.ClaimMonth</li>
         <li class="list-group-item"><strong>Type:</strong> @Model.ClaimType</li>
         <li class="list-group-item"><strong>Hours:</strong> @Model.HoursWorked</li>
         <li class="list-group-item"><strong>Rate:</strong> R @Model.HourlyRate</li>
-        <li class="list-group-item"><strong>Total:</strong> R @(Model.HoursWorked* Model.HourlyRate)</li>
-        <li class="list-group-item"><strong>Status:</strong> @Model.Status</li>
-        <li class="list-group-item"><strong>Submitted At:</strong> @Model.SubmittedAt.ToString("f")</li>
+        <li class="list-group-item"><strong>Total:</strong> R @(Model.HoursWorked * Model.HourlyRate)</li>
+        @if (!string.IsNullOrEmpty(Model.AttachmentPath))
+        {
+            <li class="list-group-item"><strong>Attachment:</strong><a href="@Model.AttachmentPath" target="_blank">@Model.AttachmentName</a></li>
+        }
         <li class="list-group-item"><strong>Notes:</strong> @Model.Notes</li>
+
     </ul>
 
     <a class="btn btn-primary mt-3" asp-action="Lecturer_Dashboard">Return to Dashboard</a>

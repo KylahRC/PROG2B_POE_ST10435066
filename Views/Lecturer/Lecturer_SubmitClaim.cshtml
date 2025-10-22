@@ -58,61 +58,60 @@
 </style>
 
 
-
 <div class="claim-form mt-5">
     <h2>Submit Monthly Claim</h2>
-    <form asp-action="SubmitClaim" method="post" enctype="multipart/form-data">
-        <div class="form-group mb-3">
-            <label for="claimMonth">This claim is for the month of:</label>
-            <select id="claimMonth" name="claimMonth" class="form-control">
-                <option value="">-- Select Month --</option>
-                <option>January</option>
-                <option>February</option>
-                <option>March</option>
-                <option>April</option>
-                <option>May</option>
-                <option>June</option>
-                <option>July</option>
-                <option>August</option>
-                <option>September</option>
-                <option>October</option>
-                <option>November</option>
-                <option>December</option>
-            </select>
-        </div>
+        <form asp-action="SubmitClaim" method="post" enctype="multipart/form-data">
+            <div class="form-group mb-3">
+                <label for="claimMonth">This claim is for the month of:</label>
+                    <select id="claimMonth" name="claimMonth" class="form-control">
+                        <option value="">-- Select Month --</option>
+                        <option>January</option>
+                        <option>February</option>
+                        <option>March</option>
+                        <option>April</option>
+                        <option>May</option>
+                        <option>June</option>
+                        <option>July</option>
+                        <option>August</option>
+                        <option>September</option>
+                        <option>October</option>
+                        <option>November</option>
+                        <option>December</option>
+                    </select>
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="claimType">I am claiming for:</label>
-            <select id="claimType" name="claimType" class="form-control">
-                <option value="">-- Select Claim Type --</option>
-                <option>Marking</option>
-                <option>Moderation</option>
-                <option>Invigilation</option>
-                <option>Other</option>
-            </select>
-        </div>
+            <div class="form-group mb-3">
+                <label for="claimType">I am claiming for:</label>
+                    <select id="claimType" name="claimType" class="form-control">
+                        <option value="">-- Select Claim Type --</option>
+                        <option>Marking</option>
+                        <option>Moderation</option>
+                        <option>Invigilation</option>
+                        <option>Other</option>
+                    </select>
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="hoursWorked">I am claiming (hours worked):</label>
-            <input type="number" id="hoursWorked" name="hoursWorked" class="form-control" placeholder="e.g. 4" step="0.1" />
-        </div>
+            <div class="form-group mb-3">
+                <label for="hoursWorked">I am claiming (hours worked):</label>
+                    <input type="number" id="hoursWorked" name="hoursWorked" class="form-control" placeholder="e.g. 4" step="0.1" />
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="hourlyRate">At the hourly Rate (in Rands) of:</label>
-            <input type="number" id="hourlyRate" name="hourlyRate" class="form-control" placeholder="e.g. 250" step="0.01" />
-        </div>
+            <div class="form-group mb-3">
+                <label for="hourlyRate">At the hourly Rate (in Rands) of:</label>
+                    <input type="number" id="hourlyRate" name="hourlyRate" class="form-control" placeholder="e.g. 250" step="0.01" />
+            </div>
 
-        <div class="form-group mt-3">
-            <label for="supportingFile">Upload Supporting Documents:</label>
-            <input type="file" name="supportingFile" class="form-control" />
-        </div>
+            <div class="form-group mt-3">
+                <label for="supportingFile">Upload Supporting Documents:</label>
+                    <input type="file" name="supportingFile" class="form-control" />
+            </div>
 
-        <div class="form-group mb-3">
-            <label for="notes">Additional Notes about the claim:</label>
-            <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
-        </div>
+            <div class="form-group mb-3">
+                <label for="notes">Additional Notes about the claim:</label>
+                    <textarea id="notes" name="notes" class="form-control" rows="3"></textarea>
+            </div>
 
-        <button type="submit" class="btn">Submit Claim</button>
-        <a class="btn cancel-btn" asp-controller="Lecturer" asp-action="Lecturer_Dashboard">Cancel</a>
-    </form>
+            <button type="submit" class="btn">Submit Claim</button>
+                <a class="btn cancel-btn" asp-controller="Lecturer" asp-action="Lecturer_Dashboard">Cancel</a>
+        </form>
 </div>
