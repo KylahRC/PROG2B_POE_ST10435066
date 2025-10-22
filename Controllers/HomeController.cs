@@ -52,7 +52,7 @@ namespace MonthlyClaimsSystem.Controllers
             }
 
             // Optional: store username in session
-            HttpContext.Session.SetString("Username", user.Username);
+            HttpContext.Session.SetString("EmployeeNumber", user.EmployeeNumber);
 
             // Redirect based on role
             return role switch

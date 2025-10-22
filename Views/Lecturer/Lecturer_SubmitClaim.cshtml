@@ -2,6 +2,15 @@
     ViewData["Title"] = "Claims System - Lecturer: Submit Claim";
 }
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+
 <style>
     .claim-form {
         max-width: 600px;
@@ -48,12 +57,14 @@
     }
 </style>
 
+
+
 <div class="claim-form mt-5">
     <h2>Submit Monthly Claim</h2>
-    <form asp-action="SubmitClaim" method="post">
+    <form asp-controller="Lecturer" asp-action="SubmitClaim" method="post">
         <div class="form-group mb-3">
-            <label for="month">This claim is for the month of:</label>
-            <select id="month" name="month" class="form-control">
+            <label for="claimMonth">This claim is for the month of:</label>
+            <select id="claimMonth" name="claimMonth" class="form-control">
                 <option value="">-- Select Month --</option>
                 <option>January</option>
                 <option>February</option>
@@ -82,19 +93,21 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="hours">I am claiming:</label>
-            <input type="text" id="hours" name="hours" class="form-control" placeholder="e.g. 4 hrs" />
+            <label for="hoursWorked">I am claiming:</label>
+            <input type="number" id="hoursWorked" name="hoursWorked" class="form-control" placeholder="e.g. 4" step="0.1" />
         </div>
 
         <div class="form-group mb-3">
-            <label for="rate">Hourly Rate (Rands):</label>
-            <input type="text" id="rate" name="rate" class="form-control" placeholder="e.g. 250" />
+            <label for="hourlyRate">Hourly Rate (Rands):</label>
+            <input type="number" id="hourlyRate" name="hourlyRate" class="form-control" placeholder="e.g. 250" step="0.01" />
         </div>
 
         <div class="form-group mb-3">
             <label>Upload Supporting Evidence:</label>
-            <div class="form-control text-muted">Name of document would show here</div>
+            <input type="text" name="supportingDocument" class="form-control" />
+            @* <div class="form-control text-muted">Name of document would show here</div> *@
         </div>
+
 
         <div class="form-group mb-3">
             <label for="notes">Additional Notes:</label>
