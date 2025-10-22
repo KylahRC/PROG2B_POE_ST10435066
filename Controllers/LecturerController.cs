@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MonthlyClaimsSystem.Models; // Or whatever namespace contains Claim
-
 
 public class LecturerController : Controller
 {
@@ -14,24 +12,22 @@ public class LecturerController : Controller
 
     public IActionResult Lecturer_Dashboard()
     {
-        return View(); // Displays lecturer dashboard
+        return View();
     }
 
     public IActionResult Lecturer_SubmitClaim()
     {
-        return View(); // Displays claim submission form
+        return View();
     }
 
     public IActionResult Lecturer_ViewClaims()
     {
-        return View(); // Should match the name of your .cshtml file
+        return View();
     }
 
     [HttpPost]
     public IActionResult SubmitClaim(string claimMonth, string claimType, decimal hoursWorked, decimal hourlyRate, string notes)
     {
-        Console.WriteLine("SubmitClaim action triggered");
-
         var empNum = HttpContext.Session.GetString("EmployeeNumber");
         if (string.IsNullOrEmpty(empNum))
         {
@@ -41,7 +37,6 @@ public class LecturerController : Controller
 
         try
         {
-
             var claim = new Claim
             {
                 EmployeeNumber = empNum,
@@ -54,23 +49,28 @@ public class LecturerController : Controller
                 SubmittedAt = DateTime.Now
             };
 
-
             _context.Claims.Add(claim);
             _context.SaveChanges();
+
+            return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
         }
         catch (Exception ex)
         {
             TempData["Error"] = "Submission failed: " + ex.Message;
         }
 
-        Console.WriteLine($"Received: {claimMonth}, {claimType}, {hoursWorked}, {hourlyRate}, {notes}");
-        Console.WriteLine($"Saving claim for {empNum}: {claimMonth}, {claimType}, {hoursWorked}, {hourlyRate}");
-
-
-        TempData["Success"] = "Claim submitted successfully!";
         return RedirectToAction("Lecturer_Dashboard");
-
     }
 
+    public IActionResult ClaimConfirmation(int id)
+    {
+        var claim = _context.Claims.FirstOrDefault(c => c.ClaimId == id);
+        if (claim == null)
+        {
+            TempData["Error"] = "Claim not found.";
+            return RedirectToAction("Lecturer_Dashboard");
+        }
 
+        return View(claim);
+    }
 }

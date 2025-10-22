@@ -9,7 +9,4 @@
         public DateTime ChangeDate { get; set; }
         public string Reason { get; set; }
     }
-
-
 }
-

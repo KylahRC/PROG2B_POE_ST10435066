@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 
-
 namespace MonthlyClaimsSystem
 {
     public class Program
@@ -9,11 +8,10 @@ namespace MonthlyClaimsSystem
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ClaimDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-            builder.Services.AddSession(); 
+            builder.Services.AddSession();
 
             var app = builder.Build();
 
@@ -26,7 +24,7 @@ namespace MonthlyClaimsSystem
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseSession(); 
+            app.UseSession();
             app.UseAuthorization();
 
             app.MapControllerRoute(

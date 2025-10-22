@@ -3,7 +3,9 @@ using MonthlyClaimsSystem.Models;
 
 public class ClaimDbContext : DbContext
 {
-    public ClaimDbContext(DbContextOptions<ClaimDbContext> options) : base(options) { }
+    public ClaimDbContext(DbContextOptions<ClaimDbContext> options) : base(options)
+    {
+    }
 
     public DbSet<User> Users { get; set; }
     public DbSet<Claim> Claims { get; set; }
@@ -13,17 +15,14 @@ public class ClaimDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ClaimStatusLog>()
-            .HasKey(c => c.LogId); // Tell EF this is the primary key
+            .HasKey(c => c.LogId);
 
         modelBuilder.Entity<Claim>()
-    .Property(c => c.HourlyRate)
-    .HasPrecision(6, 2); // Matches SQL schema
+            .Property(c => c.HourlyRate)
+            .HasPrecision(6, 2);
 
         modelBuilder.Entity<Claim>()
             .Property(c => c.HoursWorked)
-            .HasPrecision(5, 2); // Matches SQL schema
-
-        // Optional: configure other entities here
+            .HasPrecision(5, 2); 
     }
-
 }

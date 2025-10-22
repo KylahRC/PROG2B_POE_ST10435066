@@ -4,7 +4,7 @@ namespace MonthlyClaimsSystem.Models
 {
     public class User
     {
-        [Key] // This tells EF that this is the primary key
+        [Key]
         public string EmployeeNumber { get; set; }
 
         public string Username { get; set; }
@@ -13,5 +13,4 @@ namespace MonthlyClaimsSystem.Models
         public string Name { get; set; }
         public string Surname { get; set; }
     }
-
 }

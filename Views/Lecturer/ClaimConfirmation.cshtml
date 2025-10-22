@@ -1,0 +1,20 @@
+﻿@model MonthlyClaimsSystem.Models.Claim
+
+<div class="claim-form mt-5">
+    <h2>✅ Claim Submitted Successfully</h2>
+    <p>Your claim has been saved with the following details:</p>
+
+    <ul class="list-group">
+        <li class="list-group-item"><strong>Employee Number:</strong> @Model.EmployeeNumber</li>
+        <li class="list-group-item"><strong>Month:</strong> @Model.ClaimMonth</li>
+        <li class="list-group-item"><strong>Type:</strong> @Model.ClaimType</li>
+        <li class="list-group-item"><strong>Hours:</strong> @Model.HoursWorked</li>
+        <li class="list-group-item"><strong>Rate:</strong> R @Model.HourlyRate</li>
+        <li class="list-group-item"><strong>Total:</strong> R @(Model.HoursWorked* Model.HourlyRate)</li>
+        <li class="list-group-item"><strong>Status:</strong> @Model.Status</li>
+        <li class="list-group-item"><strong>Submitted At:</strong> @Model.SubmittedAt.ToString("f")</li>
+        <li class="list-group-item"><strong>Notes:</strong> @Model.Notes</li>
+    </ul>
+
+    <a class="btn btn-primary mt-3" asp-action="Lecturer_Dashboard">Return to Dashboard</a>
+</div>
