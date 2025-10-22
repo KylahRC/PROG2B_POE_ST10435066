@@ -1,3 +1,4 @@
+using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MonthlyClaimsSystem.Models;
@@ -19,6 +20,9 @@ public class CoordinatorController : Controller
     public IActionResult Coordinator_PendingClaims()
     {
         var pendingClaims = _context.Claims
+            .Include(c => c.Lecturer)
+            .Include(c => c.StatusLogs)
+                .ThenInclude(log => log.ChangedByUser)
             .Where(c => c.Status == "Pending")
             .OrderByDescending(c => c.SubmittedAt)
             .ToList();
@@ -30,6 +34,8 @@ public class CoordinatorController : Controller
     {
         var approvedClaims = _context.Claims
             .Include(c => c.Lecturer)
+            .Include(c => c.StatusLogs)
+                .ThenInclude(log => log.ChangedByUser)
             .Where(c => c.Status == "Approved")
             .OrderByDescending(c => c.SubmittedAt)
             .ToList();
@@ -41,12 +47,15 @@ public class CoordinatorController : Controller
     {
         var deniedClaims = _context.Claims
             .Include(c => c.Lecturer)
+            .Include(c => c.StatusLogs)
+                .ThenInclude(log => log.ChangedByUser)
             .Where(c => c.Status == "Denied")
             .OrderByDescending(c => c.SubmittedAt)
             .ToList();
 
         return View(deniedClaims);
     }
+
 
     public IActionResult Coordinator_ReviewClaim(int id)
     {

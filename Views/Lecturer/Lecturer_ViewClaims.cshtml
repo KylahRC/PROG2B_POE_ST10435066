@@ -17,6 +17,19 @@
         color: #f1f1f1;
     }
 
+    .claim-approved {
+        border-left: 6px solid #28a745; /* green */
+    }
+
+    .claim-pending {
+        border-left: 6px solid #ffc107; /* yellow */
+    }
+
+    .claim-denied {
+        border-left: 6px solid #dc3545; /* red */
+    }
+
+
     .claim-card h4 {
         color: black;
         margin-bottom: 10px;
@@ -57,6 +70,24 @@
         margin-right: 10px;
     }
 
+    .cancel-btn {
+        background-color: #6c757d; /* Bootstrap secondary */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+    }
+
+        .cancel-btn:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+
+
     body {
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
@@ -73,13 +104,22 @@
         _ => "status-pending"
     };
 
-    
-        <div class="claim-card">
+    var cardClass = claim.Status.ToLower() switch
+    {
+        "approved" => "claim-approved",
+        "pending" => "claim-pending",
+        "denied" => "claim-denied",
+        _ => "claim-pending"
+    };
+
+
+
+    <div class="claim-card @cardClass">
             <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
             <div class="claim-meta">
             <strong>Month:</strong> @claim.ClaimMonth<br />
-            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
-            <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
+            <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
             <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
                 @if (!string.IsNullOrEmpty(claim.AttachmentPath))
                 {
@@ -94,7 +134,7 @@
             {
                 var name = log.ChangedByUser != null
                 ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
-                : log.ChangedBy; // fallback to employee number if name missing
+                : log.ChangedBy;
 
                 <li class="list-group-item">
                     <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
@@ -110,7 +150,7 @@
 
 
             </div>
-            <div class="status">@claim.Status</div>
+        <div class="status @statusClass">@claim.Status</div>
         </div>
     
 

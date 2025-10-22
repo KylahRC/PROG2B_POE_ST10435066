@@ -36,6 +36,21 @@
         margin-top: 10px;
     }
 
+    .override-btn {
+        background-color: #dc3545;
+        color: black;
+        font-weight: bold;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+
+
+
     body {
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
@@ -52,14 +67,38 @@
             <div class="claim-meta">
                 <strong>Lecturer:</strong> @claim.Lecturer.Name.Substring(0, 1). @claim.Lecturer.Surname<br />
                 <strong>Month:</strong> @claim.ClaimMonth<br />
-                <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
-                <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+                <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
+                <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
                 <strong>Notes:</strong> @claim.Notes
+                @if (!string.IsNullOrEmpty(claim.AttachmentPath))
+                {
+                    <strong>Attachment:</strong>
+                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
+
+                    <br />
+                }
+                @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+                {
+                    var name = log.ChangedByUser != null
+                    ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
+                    : log.ChangedBy;
+
+                    <li class="list-group-item">
+                        <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+                        @if (!string.IsNullOrWhiteSpace(log.Reason))
+                        {
+                            <br />
+                            <strong>Reason:</strong>
+
+                            @log.Reason
+                        }
+                    </li>
+                }
             </div>
-            <div class="status">@claim.Status</div>
+
 
             <div class="mt-3">
-                <a class="btn btn-outline-light btn-sm" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review/Override</a>
+                <a class="override-btn" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review/Override</a>
             </div>
         </div>
     }

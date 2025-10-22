@@ -7,13 +7,15 @@
 <style>
     .claim-card {
         background-color: white;
-        border-left: 6px solid #c82333;
+        border-left: 6px solid #ffc107;
         border-radius: 12px;
         padding: 20px;
         margin-bottom: 20px;
         box-shadow: 0 0 10px rgba(0,0,0,0.3);
         color: #f1f1f1;
     }
+
+
 
         .claim-card h4 {
             color: black;
@@ -52,6 +54,17 @@
         margin-right: 10px;
     }
 
+    .review-btn {
+        background-color: #ffc107; /* Bootstrap warning yellow */
+        color: black;
+        font-weight: bold;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
     
 
     body {
@@ -60,23 +73,61 @@
     }
 </style>
 
+<div class="container mt-5">
+	<h2 class="mb-4">Pending Claims</h2>
 @foreach (var claim in Model)
 {
+
+    var statusClass = claim.Status.ToLower() switch
+    {
+        "approved" => "status-approved",
+        "pending" => "status-pending",
+        "denied" => "status-denied",
+        _ => "status-pending"
+    };
+
     <div class="claim-card">
         <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
         <div class="claim-meta">
             <strong>Lecturer:</strong> @claim.EmployeeNumber<br />
             <strong>Month:</strong> @claim.ClaimMonth<br />
-            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
-            <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
+            <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
             <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
             <strong>Notes:</strong> @claim.Notes
+                @if (!string.IsNullOrEmpty(claim.AttachmentPath))
+                {
+                    <strong>Attachment:</strong>
+                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
+
+                    <br />
+                }
+                @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+                {
+                    var name = log.ChangedByUser != null
+                    ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
+                    : log.ChangedBy;
+
+                    <li class="list-group-item">
+                        <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+                        @if (!string.IsNullOrWhiteSpace(log.Reason))
+                        {
+                            <br />
+                            <strong>Reason:</strong>
+
+                            @log.Reason
+                        }
+                    </li>
+                }
         </div>
-        <div class="status status-pending">@claim.Status</div>
+        
 
         <div class="claim-actions mt-3">
-            <a class="btn btn-outline-light btn-sm" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review Claim</a>            
+            <a class="review-btn" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review Claim</a>
         </div>
-    </div>
-}
 
+    </div>
+    
+}
+<a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_Dashboard">Back to Dashboard</a>
+</div>
