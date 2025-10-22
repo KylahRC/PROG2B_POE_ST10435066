@@ -3,6 +3,9 @@
     
 }
 
+@model List<MonthlyClaimsSystem.Models.Claim>
+
+
 <style>
     .claim-card {
         background-color: white;
@@ -60,37 +63,29 @@
     }
 </style>
 
-<div class="claim-card">
-    <h4>Claim #101 — Exam Marking</h4>
-    <div class="claim-meta">
-        <strong>Lecturer:</strong> Thabo Mokoena<br />
-        <strong>Month:</strong> August<br />
-        <strong>Hours:</strong> 12 hrs at R250/hr<br />
-        <strong>Notes:</strong> Marked final-year scripts for COS3701
-    </div>
-    <div class="status status-approved">Approved</div>
-</div>
+@foreach (var claim in Model)
+{
+    var statusClass = claim.Status.ToLower() switch
+    {
+        "approved" => "status-approved",
+        "pending" => "status-pending",
+        "denied" => "status-denied",
+        _ => "status-pending"
+    };
 
-<div class="claim-card">
-    <h4>Claim #102 — Invigilation</h4>
-    <div class="claim-meta">
-        <strong>Lecturer:</strong> Ayesha Khan<br />
-        <strong>Month:</strong> September<br />
-        <strong>Hours:</strong> 6 hrs at R200/hr<br />
-        <strong>Notes:</strong> Supervised midterm exams
+    <div class="claim-card">
+        <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
+        <div class="claim-meta">
+            <strong>Lecturer:</strong> @claim.EmployeeNumber<br />
+            <strong>Month:</strong> @claim.ClaimMonth<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
+            <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+            <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
+            <strong>Notes:</strong> @claim.Notes
+        </div>
+        <div class="status @statusClass">@claim.Status</div>
     </div>
-    <div class="status status-pending">Pending</div>
-</div>
+}
 
-<div class="claim-card">
-    <h4>Claim #103 — Consultation</h4>
-    <div class="claim-meta">
-        <strong>Lecturer:</strong> Sipho Dlamini<br />
-        <strong>Month:</strong> October<br />
-        <strong>Hours:</strong> 8 hrs at R220/hr<br />
-        <strong>Notes:</strong> Assisted students with project debugging
-    </div>
-    <div class="status status-denied">Denied</div>
-</div>
 
 <a class="btn cancel-btn mt-4" asp-controller="Lecturer" asp-action="Lecturer_Dashboard">Return</a>

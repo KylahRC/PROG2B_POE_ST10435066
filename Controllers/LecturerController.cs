@@ -22,8 +22,21 @@ public class LecturerController : Controller
 
     public IActionResult Lecturer_ViewClaims()
     {
-        return View();
+        var empNum = HttpContext.Session.GetString("EmployeeNumber");
+        if (string.IsNullOrEmpty(empNum))
+        {
+            TempData["Error"] = "Session expired. Please log in again.";
+            return RedirectToAction("Login", "Home");
+        }
+
+        var claims = _context.Claims
+            .Where(c => c.EmployeeNumber == empNum)
+            .OrderByDescending(c => c.SubmittedAt)
+            .ToList();
+
+        return View(claims);
     }
+
 
     [HttpPost]
     public IActionResult SubmitClaim(string claimMonth, string claimType, decimal hoursWorked, decimal hourlyRate, string notes)
