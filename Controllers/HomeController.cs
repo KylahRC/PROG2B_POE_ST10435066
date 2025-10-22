@@ -48,6 +48,7 @@ namespace MonthlyClaimsSystem.Controllers
             }
 
             HttpContext.Session.SetString("EmployeeNumber", user.EmployeeNumber);
+            HttpContext.Session.SetString("Role", user.Role);
 
             return role switch
             {

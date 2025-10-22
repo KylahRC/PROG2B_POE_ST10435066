@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Claims System - Coordinator: View Approved Claims";
 }
+@model List<MonthlyClaimsSystem.Models.Claim>
+
 
 <style>
     .claim-card {
@@ -43,16 +45,23 @@
 <div class="container mt-5">
     <h2 class="text-white mb-4">Approved Claims</h2>
 
-    <div class="claim-card">
-        <h4>Claim #103 — Invigilation</h4>
-        <div class="claim-meta">
-            <strong>Lecturer:</strong> T. Mokoena<br />
-            <strong>Month:</strong> July<br />
-            <strong>Hours:</strong> 3 hrs at R250/hr<br />
-            <strong>Notes:</strong> Final exam session
-        </div>
-        <div class="status">Approved</div>
-    </div>
+    @foreach (var claim in Model)
+    {
+        <div class="claim-card">
+            <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
+            <div class="claim-meta">
+                <strong>Lecturer:</strong> @claim.Lecturer.Name.Substring(0, 1). @claim.Lecturer.Surname<br />
+                <strong>Month:</strong> @claim.ClaimMonth<br />
+                <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
+                <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+                <strong>Notes:</strong> @claim.Notes
+            </div>
+            <div class="status">@claim.Status</div>
 
+            <div class="mt-3">
+                <a class="btn btn-outline-light btn-sm" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review / Override</a>
+            </div>
+        </div>
+    }
     <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_Dashboard">Back to Dashboard</a>
 </div>

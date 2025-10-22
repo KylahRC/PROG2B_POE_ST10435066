@@ -1,6 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Claims System - Coordinator: View Pending Claims";
 }
+@model List<MonthlyClaimsSystem.Models.Claim>
+
 
 <style>
     .claim-card {
@@ -58,19 +60,23 @@
     }
 </style>
 
-<div class="claim-card">
-    <h4>Claim #102 — Marking</h4>
-    <div class="claim-meta">
-        <strong>Lecturer:</strong> K. Daniels<br />
-        <strong>Month:</strong> August<br />
-        <strong>Hours:</strong> 4 hrs at R250/hr<br />
-        <strong>Notes:</strong> Final exam scripts
-    </div>
-    <div class="status status-pending">Pending</div>
+@foreach (var claim in Model)
+{
+    <div class="claim-card">
+        <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
+        <div class="claim-meta">
+            <strong>Lecturer:</strong> @claim.EmployeeNumber<br />
+            <strong>Month:</strong> @claim.ClaimMonth<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
+            <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
+            <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
+            <strong>Notes:</strong> @claim.Notes
+        </div>
+        <div class="status status-pending">@claim.Status</div>
 
-    <div class="claim-actions mt-3">
-        <a class="btn btn-outline-light btn-sm" asp-action="Coordinator_ReviewClaim" asp-route-id="102">View Details</a>
-        <a class="btn btn-success btn-sm" asp-action="ApproveClaim" asp-route-id="102">Approve</a>
-        <a class="btn btn-danger btn-sm" asp-action="DenyClaim" asp-route-id="102">Deny</a>
+        <div class="claim-actions mt-3">
+            <a class="btn btn-outline-light btn-sm" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review Claim</a>            
+        </div>
     </div>
-</div>
+}
+

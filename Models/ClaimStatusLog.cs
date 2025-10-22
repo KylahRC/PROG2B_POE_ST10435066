@@ -8,5 +8,7 @@
         public string NewStatus { get; set; }
         public DateTime ChangeDate { get; set; }
         public string Reason { get; set; }
+
+        public User ChangedByUser { get; set; }
     }
 }

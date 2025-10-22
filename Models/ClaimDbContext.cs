@@ -23,6 +23,20 @@ public class ClaimDbContext : DbContext
 
         modelBuilder.Entity<Claim>()
             .Property(c => c.HoursWorked)
-            .HasPrecision(5, 2); 
+            .HasPrecision(5, 2);
+
+        modelBuilder.Entity<ClaimStatusLog>().ToTable("ClaimStatusLog");
+
+        modelBuilder.Entity<ClaimStatusLog>()
+            .HasOne(log => log.ChangedByUser)
+            .WithMany()
+            .HasForeignKey(log => log.ChangedBy)
+            .HasPrincipalKey(user => user.EmployeeNumber);
+
+        modelBuilder.Entity<Claim>()
+            .HasOne(c => c.Lecturer)
+            .WithMany()
+            .HasForeignKey(c => c.EmployeeNumber)
+            .HasPrincipalKey(u => u.EmployeeNumber);
     }
 }

@@ -11,5 +11,9 @@
         public string Notes { get; set; }
         public string Status { get; set; } = "Pending"; // Default status
         public DateTime SubmittedAt { get; set; } = DateTime.Now;
+
+        public List<ClaimStatusLog> StatusLogs { get; set; }
+
+        public User Lecturer { get; set; }
     }
 }

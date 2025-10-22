@@ -76,15 +76,36 @@
     <div class="claim-card">
         <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
         <div class="claim-meta">
-            <strong>Lecturer:</strong> @claim.EmployeeNumber<br />
+            @* <strong>Lecturer:</strong> @claim.EmployeeNumber<br /> *@
             <strong>Month:</strong> @claim.ClaimMonth<br />
             <strong>Hours:</strong> @claim.HoursWorked hrs at R@claim.HourlyRate/hr<br />
             <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
             <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
             <strong>Notes:</strong> @claim.Notes
+            @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+            {
+                var name = log.ChangedByUser != null
+                ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
+                : log.ChangedBy; // fallback to employee number if name missing
+
+                <li class="list-group-item">
+                    <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+                    @if (!string.IsNullOrWhiteSpace(log.Reason))
+                    {
+                        <br />
+                        <strong>Reason:</strong>
+ 
+                        @log.Reason
+                    }
+                </li>
+            }
+
         </div>
         <div class="status @statusClass">@claim.Status</div>
     </div>
+
+    
+
 }
 
 

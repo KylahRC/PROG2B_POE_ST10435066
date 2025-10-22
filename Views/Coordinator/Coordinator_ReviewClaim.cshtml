@@ -1,7 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Claims System - Coordinator: View All Claims";
-    var claimId = ViewBag.ClaimId;
-    var role = ViewBag.Role as string ?? "Lecturer"; // Default to Lecturer if not passed
+}
+
+@model MonthlyClaimsSystem.Models.Claim
+
+@{
+    var isFirstReview = ViewBag.IsFirstReview as bool? ?? true;
 }
 
 <style>
@@ -55,27 +59,52 @@
 <div class="claim-box mt-5">
     <h2>Claim Details</h2>
 
-    <p><strong>Claim ID:</strong> @claimId</p>
-    <p><strong>Lecturer:</strong> K. Daniels</p>
-    <p><strong>Type:</strong> Marking</p>
-    <p><strong>Month:</strong> August</p>
-    <p><strong>Hours:</strong> 4</p>
-    <p><strong>Rate:</strong> R250/hr</p>
-    <p><strong>Notes:</strong> Completed final exam scripts</p>
+    <p><strong>Lecturer:</strong> @Model.Lecturer.Name @Model.Lecturer.Surname</p>
+    <p><strong>Type:</strong> @Model.ClaimType</p>
+    <p><strong>Month:</strong> @Model.ClaimMonth</p>
+    <p><strong>Hours:</strong> @Model.HoursWorked</p>
+    <p><strong>Rate:</strong> R @Model.HourlyRate/hr</p>
+    <p><strong>Total:</strong> R @(Model.HoursWorked* Model.HourlyRate)</p>
+    <p><strong>Submitted:</strong> @Model.SubmittedAt.ToString("f")</p>
+    <p><strong>Notes:</strong> @Model.Notes</p>
 
-    @if (role == "Coordinator" || role == "Manager")
+
+    @if (isFirstReview)
     {
         <form method="post" asp-action="ApproveClaim">
-            <input type="hidden" name="id" value="@claimId" />
+            <input type="hidden" name="id" value="@Model.ClaimId" />
             <button type="submit" class="btn btn-success mt-3">Approve</button>
         </form>
 
-        <form method="post" asp-action="DenyClaim" class="mt-2">
-            <input type="hidden" name="id" value="@claimId" />
-            <button type="submit" class="btn btn-danger">Deny</button>
+        <form method="post" asp-action="DenyClaim">
+            <input type="hidden" name="id" value="@Model.ClaimId" />
+            <div class="form-group mt-3">
+                <label for="reason">Reason for Denial:</label>
+                <textarea name="reason" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger mt-2">Deny</button>
         </form>
     }
 
+    @if (!isFirstReview)
+    {
+        <form method="post" asp-action="OverrideClaimStatus">
+            <input type="hidden" name="id" value="@Model.ClaimId" />
+            <div class="form-group mt-3">
+                <label for="newStatus">New Status:</label>
+                <select name="newStatus" class="form-control">
+                    <option value="Approved">Approved</option>
+                    <option value="Denied">Denied</option>
+                    <option value="Pending">Pending</option>
+                </select>
+            </div>
+            <div class="form-group mt-2">
+                <label for="reason">Reason for Override:</label>
+                <textarea name="reason" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-warning mt-3">Override Status</button>
+        </form>
+    }
     <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_PendingClaims">Back</a>
 </div>
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MonthlyClaimsSystem.Models; // Or whatever namespace contains Claim
 
 public class LecturerController : Controller
@@ -30,13 +31,14 @@ public class LecturerController : Controller
         }
 
         var claims = _context.Claims
-            .Where(c => c.EmployeeNumber == empNum)
-            .OrderByDescending(c => c.SubmittedAt)
-            .ToList();
+    .Include(c => c.StatusLogs)
+        .ThenInclude(log => log.ChangedByUser)
+    .Where(c => c.EmployeeNumber == empNum)
+    .OrderByDescending(c => c.SubmittedAt)
+    .ToList();
 
         return View(claims);
     }
-
 
     [HttpPost]
     public IActionResult SubmitClaim(string claimMonth, string claimType, decimal hoursWorked, decimal hourlyRate, string notes)
