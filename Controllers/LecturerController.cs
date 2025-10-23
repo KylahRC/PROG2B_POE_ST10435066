@@ -23,62 +23,130 @@ public class LecturerController : Controller
 
         #region Dashboard and Claim Views
 
-            // Displays the claim confirmation view for a submitted claim.
-            public IActionResult ClaimConfirmation(int id)
-            {
-                // Retrieve the claim details using the provided ID
-                var claim = _context.Claims.FirstOrDefault(c => c.ClaimId == id);
-                if (claim == null)
-                {
-                    TempData["Error"] = "Claim not found.";
-                    return RedirectToAction("Lecturer_Dashboard");
-                }
-
-                return View(claim);
-            }
-
 
             // Displays the lecturer dashboard view.
             public IActionResult Lecturer_Dashboard()
             {
-                return View();
+                try
+                {
+                    var role = HttpContext.Session.GetString("Role");
+                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+                    if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
+                    {
+                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                        return RedirectToAction("Error", "Home", new { code = 403 });
+                    }
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                    return RedirectToAction("Error", "Home");
+                }
             }
 
 
             // Displays the claim submission form view.
             public IActionResult Lecturer_SubmitClaim()
             {
-                return View();
+                try
+                {
+                    var role = HttpContext.Session.GetString("Role");
+                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+                    if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
+                    {
+                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                        return RedirectToAction("Error", "Home", new { code = 403 });
+                    }
+
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                    return RedirectToAction("Error", "Home");
+                }
+            }
+
+
+            // Displays the claim confirmation view for a submitted claim.
+            public IActionResult ClaimConfirmation(int id)
+            {
+                try
+                { 
+                    var role = HttpContext.Session.GetString("Role");
+                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+                    if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
+                    {
+                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                        return RedirectToAction("Error", "Home", new { code = 403 });
+                    }
+
+                    // Retrieve the claim details using the provided ID
+                    var claim = _context.Claims.FirstOrDefault(c => c.ClaimId == id);
+                    if (claim == null)
+                    {
+                        TempData["Error"] = "Claim not found.";
+                        return RedirectToAction("Lecturer_Dashboard");
+                    }
+
+                    return View(claim);
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                    return RedirectToAction("Error", "Home");
+                }
             }
 
 
             // Displays all claims submitted by the logged-in lecturer with status logs and user details.
             public IActionResult Lecturer_ViewClaims()
             {
-                // Get the logged-in lecturer's employee number from session
-                var empNum = HttpContext.Session.GetString("EmployeeNumber");
-
-                // If not found, redirect to login
-                if (string.IsNullOrEmpty(empNum))
+                try
                 {
-                    TempData["Error"] = "Session expired. Please log in again.";
-                    return RedirectToAction("Login", "Home");
+
+                    var role = HttpContext.Session.GetString("Role");
+
+                    // Get the logged-in lecturer's employee number from session
+                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+                    if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
+                    {
+                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                        return RedirectToAction("Error", "Home", new { code = 403 });
+                    }
+
+                    // If not found, redirect to login
+                    if (string.IsNullOrEmpty(empNum))
+                    {
+                        TempData["Error"] = "Session expired. Please log in again.";
+                        return RedirectToAction("Login", "Home");
+                    }
+
+                    // Retrieve claims with status logs and user details
+                    // Order by submission date descending
+                    var claims = _context.Claims
+                        .Include(c => c.StatusLogs)
+                            // Include the user who made each status change
+                            .ThenInclude(log => log.ChangedByUser)
+                        .Where(c => c.EmployeeNumber == empNum)
+                        .OrderByDescending(c => c.SubmittedAt)
+                        .ToList();
+
+                    return View(claims);
                 }
-
-                // Retrieve claims with status logs and user details
-                // Order by submission date descending
-                var claims = _context.Claims
-                    .Include(c => c.StatusLogs)
-                        // Include the user who made each status change
-                        .ThenInclude(log => log.ChangedByUser)
-                    .Where(c => c.EmployeeNumber == empNum)
-                    .OrderByDescending(c => c.SubmittedAt)
-                    .ToList();
-
-                return View(claims);
+                 catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                    return RedirectToAction("Error", "Home");
+                }
             }
 
-    #endregion Dashboard and Claim Views
+        #endregion Dashboard and Claim Views
 
         #region Action Methods for Submitting Claims
 
@@ -86,46 +154,61 @@ public class LecturerController : Controller
             [HttpPost]
                 public IActionResult SubmitClaim(Claim claim, IFormFile supportingFile)
                 {
-                    claim.EmployeeNumber = HttpContext.Session.GetString("EmployeeNumber");
+                    try
+                    { 
+                        claim.EmployeeNumber = HttpContext.Session.GetString("EmployeeNumber");
 
-                    // Handle file upload if a file is provided
-                    if (supportingFile != null && supportingFile.Length > 0)
-                    {
-                        // Save the file to a designated folder (e.g., "wwwroot/uploads")
-                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                        Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
-
-                        // Generate a unique file name to avoid conflicts
-                        // Use a GUID (which stands for Globally Unique Identifier which is a 128-bit integer used to uniquely identify information) combined with the original file name
-                        // We did this because if two users upload a file with the same name, one could overwrite the other and thats bad
-                        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(supportingFile.FileName)}";
-
-                        var filePath = Path.Combine(uploadsFolder, fileName);
-
-                        // Save the file to the server
-                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        // Handle file upload if a file is provided
+                        if (supportingFile != null && supportingFile.Length > 0)
                         {
-                            supportingFile.CopyTo(stream);
+                            // Save the file to a designated folder (e.g., "wwwroot/uploads")
+                            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+
+                            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+
+                            // Generate a unique file name to avoid conflicts
+                            // Use a GUID (which stands for Globally Unique Identifier which is a 128-bit integer used to uniquely identify information) combined with the original file name
+                            // We did this because if two users upload a file with the same name, one could overwrite the other and thats bad
+                            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(supportingFile.FileName)}";
+
+                            var filePath = Path.Combine(uploadsFolder, fileName);
+
+                            // Save the file to the server
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                supportingFile.CopyTo(stream);
+                            }
+
+                            // Store the file path or name in the claim record
+                            claim.AttachmentPath = $"/uploads/{fileName}";
+                            claim.AttachmentName = supportingFile.FileName;
+                            claim.AttachmentSize = supportingFile.Length;
                         }
 
-                        // Store the file path or name in the claim record
-                        claim.AttachmentPath = $"/uploads/{fileName}";
-                        claim.AttachmentName = supportingFile.FileName;
-                        claim.AttachmentSize = supportingFile.Length;
+                        // Set initial claim properties
+                        // These details are captured server-side to ensure integrity, the lecturer can't manipulate these values in the form
+                        claim.SubmittedAt = DateTime.Now;
+                        claim.Status = "Pending";
+
+                        _context.Claims.Add(claim);
+
+                        _context.SaveChanges();
+
+                        return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
                     }
-
-                    // Set initial claim properties
-                    // These details are captured server-side to ensure integrity, the lecturer can't manipulate these values in the form
-                    claim.SubmittedAt = DateTime.Now;
-                    claim.Status = "Pending";
-
-                    _context.Claims.Add(claim);
-
-                    _context.SaveChanges();
-
-                    return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                        return RedirectToAction("Error", "Home");
+                    }
                 }
+
+                public IActionResult Logout()
+            {
+                HttpContext.Session.Clear(); // Wipes all session data
+                return RedirectToAction("Index", "Home"); // Or redirect to login
+            }
+
 
         #endregion Action Methods for Submitting Claims
 

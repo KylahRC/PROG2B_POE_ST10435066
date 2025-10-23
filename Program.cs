@@ -1,3 +1,4 @@
+using Azure;
 using Microsoft.EntityFrameworkCore;
 
 namespace MonthlyClaimsSystem
@@ -15,6 +16,7 @@ namespace MonthlyClaimsSystem
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddSession();
 
+            
             // Build the app.
             var app = builder.Build();
 
@@ -31,6 +33,9 @@ namespace MonthlyClaimsSystem
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?code={0}");
+
+
 
             // Enables session management for storing user data across requests.
             // We need this for login sessions and stuff.

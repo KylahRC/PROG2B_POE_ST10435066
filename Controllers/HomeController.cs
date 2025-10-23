@@ -12,10 +12,10 @@ namespace MonthlyClaimsSystem.Controllers
 
         #region Public Constructors
 
-        public HomeController(ClaimDbContext context)
-        {
-            _context = context;
-        }
+            public HomeController(ClaimDbContext context)
+            {
+                _context = context;
+            }
 
         #endregion Public Constructors
 
@@ -25,8 +25,30 @@ namespace MonthlyClaimsSystem.Controllers
 
                 // GET: /Home/Error
                 // Renders the error view.
-                public IActionResult Error()
+                public IActionResult Error(int? code)
                 {
+                    var tempMessage = TempData["ErrorMessage"] as string;
+                    ViewBag.StatusCode = code;
+
+                    ViewBag.ErrorMessage = !string.IsNullOrEmpty(tempMessage)
+                        ? tempMessage
+                        : code switch
+                        {
+                            403 => "Access denied. You do not have permission to view this page.",
+                            404 => "The page you were looking for doesn't exist.",
+                            500 => "Something went wrong on our end.",
+                            _ => "An unexpected error occurred."
+                        };
+
+                    var role = HttpContext.Session.GetString("Role");
+
+                    // Only treat role as missing if there's no status code AND no session
+                    ViewBag.RoleMissing = code == null && string.IsNullOrEmpty(role);
+
+                    // Only show dashboard button if role exists AND it's not a 403
+                    ViewBag.RedirectController = !string.IsNullOrEmpty(role) && code != 403 ? role : null;
+                    ViewBag.RedirectAction = !string.IsNullOrEmpty(role) && code != 403 ? $"{role}_Dashboard" : null;
+
                     return View();
                 }
 
@@ -34,18 +56,28 @@ namespace MonthlyClaimsSystem.Controllers
                 // GET: /Home/Index
                 // Renders the home page view.
                 public IActionResult Index()
-                {
-                    return View();
-                }
+                        {
+                    
+                            return View();
+                        }
 
 
                 // GET: /Home/Login
                 // Renders the login view for the specified role.
                 public IActionResult Login(string role)
                 {
-                    // Pass the role to the view for context
-                    ViewBag.Role = role;
-                    return View();
+                    try
+                    {
+                        // Pass the role to the view for context
+                        ViewBag.Role = role;
+                        return View();
+                    }
+             
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                        return RedirectToAction("Error", "Home");
+                    }
                 }
 
 
@@ -56,6 +88,15 @@ namespace MonthlyClaimsSystem.Controllers
                     return View();
                 }
 
+
+                // GET: /Home/Logout
+                // Logs out the user by clearing the session and redirects to home.
+                public IActionResult Logout()
+                {
+                    HttpContext.Session.Clear(); // Wipes all session data
+                    return RedirectToAction("Index", "Home"); // Or redirect to Login
+                }
+
             #endregion Standard Methods
 
             #region Login Method
@@ -64,6 +105,8 @@ namespace MonthlyClaimsSystem.Controllers
                 // Authenticates user and redirects to role-specific dashboard.
                 [HttpPost]
                     public IActionResult Login(string role, string username, string employeeNumber, string email)
+                {
+                    try
                     {
                         // Normalize inputs for comparison
                         var normalizedUsername = username?.Trim().ToLower();
@@ -72,7 +115,6 @@ namespace MonthlyClaimsSystem.Controllers
                         var normalizedRole = role?.Trim().ToLower();
 
                         // Find user matching all criteria
-                        // Using FirstOrDefault to avoid exceptions if no match is found            
                         var user = _context.Users.FirstOrDefault(u =>
                             u.EmployeeNumber != null && u.EmployeeNumber.Trim() == normalizedEmployeeNumber &&
                             u.Username != null && u.Username.Trim().ToLower() == normalizedUsername &&
@@ -98,7 +140,15 @@ namespace MonthlyClaimsSystem.Controllers
                             "Manager" => RedirectToAction("Manager_Dashboard", "Manager"),
                             _ => RedirectToAction("Index")
                         };
+                    
                     }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+                        return RedirectToAction("Error", "Home");
+                    }
+        
+                }
 
             #endregion Login Method
 
