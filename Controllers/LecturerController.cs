@@ -147,6 +147,7 @@ public class LecturerController : Controller
 
     #region Action Methods for Submitting Claims
 
+    // Handles the submission of a new claim, requiring a file upload.
     [HttpPost]
     public IActionResult SubmitClaim(Claim claim, IFormFile supportingFile)
     {
@@ -154,25 +155,33 @@ public class LecturerController : Controller
         {
             claim.EmployeeNumber = HttpContext.Session.GetString("EmployeeNumber");
 
-            // Handle file upload
-            if (supportingFile != null && supportingFile.Length > 0)
+            // Enforce required file upload
+            if (supportingFile == null || supportingFile.Length == 0)
             {
-                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsFolder);
-
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(supportingFile.FileName)}";
-                var filePath = Path.Combine(uploadsFolder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    supportingFile.CopyTo(stream);
-                }
-
-                claim.AttachmentPath = $"/uploads/{fileName}";
-                claim.AttachmentName = supportingFile.FileName;
-                claim.AttachmentSize = supportingFile.Length;
+                ModelState.AddModelError("Attachment", "Supporting document is required.");
+                return View("Lecturer_SubmitClaim", claim);
+                // Return to the form with validation error
             }
 
+            // Save the file to a designated folder (wwwroot/uploads)
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
+
+            // Generate a unique file name to avoid conflicts
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(supportingFile.FileName)}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                supportingFile.CopyTo(stream);
+            }
+
+            // Store the file path or name in the claim record
+            claim.AttachmentPath = $"/uploads/{fileName}";
+            claim.AttachmentName = supportingFile.FileName;
+            claim.AttachmentSize = supportingFile.Length;
+
+            // Set initial claim properties
             claim.SubmittedAt = DateTime.Now;
 
             // Define unpaid categories
@@ -198,7 +207,7 @@ public class LecturerController : Controller
             _context.Claims.Add(claim);
             _context.SaveChanges();
 
-            //  Add system log entry
+            // Add system log entry
             var log = new ClaimStatusLog
             {
                 ClaimId = claim.ClaimId,
@@ -208,8 +217,8 @@ public class LecturerController : Controller
                 Reason = claim.Status switch
                 {
                     "Approved" => "Auto-approved by system",
-                    "Denied" => "Auto-denied by system due to hourly rate discrepencies",
-                    "Pending" => "",
+                    "Denied" => "Auto-denied by system due to hourly rate discrepancies",
+                    "Pending" => "Paid work requires manual review",
                     _ => "System set status"
                 },
                 IsSystemChange = true
@@ -217,7 +226,6 @@ public class LecturerController : Controller
 
             _context.ClaimStatusLogs.Add(log);
             _context.SaveChanges();
-
 
             return RedirectToAction("ClaimConfirmation", new { id = claim.ClaimId });
         }
@@ -227,6 +235,7 @@ public class LecturerController : Controller
             return RedirectToAction("Error", "Home");
         }
     }
+
 
 
 
