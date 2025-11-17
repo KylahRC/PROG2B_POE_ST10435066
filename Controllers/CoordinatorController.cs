@@ -49,110 +49,100 @@ public class CoordinatorController : Controller
             }
 
 
-            // Displays all approved claims with lecturer and status log details.
-            public IActionResult Coordinator_ApprovedClaims()
+    // Displays all approved claims with lecturer and status log details.
+    public IActionResult Coordinator_ApprovedClaims()
+    {
+        try
+        {
+            var role = HttpContext.Session.GetString("Role");
+            var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+            if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
             {
-                try
-                {
-                    // Check session for role and employee number
-                    var role = HttpContext.Session.GetString("Role");
-                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
-
-                    // If not logged in as Coordinator, redirect to error
-                    if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
-                    {
-                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
-                        return RedirectToAction("Error", "Home", new { code = 403 });
-                    }
-                    // Fetch approved claims with related lecturer and status log details
-                    var approvedClaims = _context.Claims
-                        .Include(c => c.Lecturer)
-                        .Include(c => c.StatusLogs)
-                            .ThenInclude(log => log.ChangedByUser)
-                        .Where(c => c.Status == "Approved")
-                        .OrderByDescending(c => c.SubmittedAt)
-                        .ToList();
-
-                    return View(approvedClaims);
-                }
-                catch (Exception ex)
-                {
-                    // Handle any unexpected errors
-                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
-                    return RedirectToAction("Error", "Home");
-                }
+                TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                return RedirectToAction("Error", "Home", new { code = 403 });
             }
 
+            var approvedClaims = _context.Claims
+                .Include(c => c.Lecturer)
+                .Include(c => c.StatusLogs) 
+                .Where(c => c.Status == "Approved")
+                .OrderByDescending(c => c.SubmittedAt)
+                .ToList();
 
-            // Displays all denied claims with lecturer and status log details.
-            public IActionResult Coordinator_DeniedClaims()
+            return View(approvedClaims);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+            return RedirectToAction("Error", "Home");
+        }
+    }
+
+    // Displays all denied claims with lecturer and status log details.
+    public IActionResult Coordinator_DeniedClaims()
+    {
+        try
+        {
+            var role = HttpContext.Session.GetString("Role");
+            var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+            if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
             {
-                try
-                {
-                    // Check session for role and employee number
-                    var role = HttpContext.Session.GetString("Role");
-                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
-
-
-                    // if not logged in as Coordinator, redirect to error
-                    if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
-                    {
-                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
-                        return RedirectToAction("Error", "Home", new { code = 403 });
-                    }
-                    // Fetch denied claims with related lecturer and status log details
-                    var deniedClaims = _context.Claims
-                        .Include(c => c.Lecturer)
-                        .Include(c => c.StatusLogs)
-                            .ThenInclude(log => log.ChangedByUser)
-                        .Where(c => c.Status == "Denied")
-                        .OrderByDescending(c => c.SubmittedAt)
-                        .ToList();
-
-                    return View(deniedClaims);
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
-                    return RedirectToAction("Error", "Home");
-                }
+                TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                return RedirectToAction("Error", "Home", new { code = 403 });
             }
 
+            var deniedClaims = _context.Claims
+                .Include(c => c.Lecturer)
+                .Include(c => c.StatusLogs) 
+                .Where(c => c.Status == "Denied")
+                .OrderByDescending(c => c.SubmittedAt)
+                .ToList();
 
-            // Displays all pending claims with lecturer and status log details.
-            public IActionResult Coordinator_PendingClaims()
+            return View(deniedClaims);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+            return RedirectToAction("Error", "Home");
+        }
+    }
+
+    // Displays all pending claims with lecturer and status log details.
+    public IActionResult Coordinator_PendingClaims()
+    {
+        try
+        {
+            var role = HttpContext.Session.GetString("Role");
+            var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+            if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
             {
-                try 
-                {            
-                    var role = HttpContext.Session.GetString("Role");
-                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
-
-                    if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
-                    {
-                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
-                        return RedirectToAction("Error", "Home", new { code = 403 });
-                    }
-                    // Fetch pending claims with related lecturer and status log details
-                    var pendingClaims = _context.Claims
-                        .Include(c => c.Lecturer)
-                        .Include(c => c.StatusLogs)
-                            .ThenInclude(log => log.ChangedByUser)
-                        .Where(c => c.Status == "Pending")
-                        .OrderByDescending(c => c.SubmittedAt)
-                        .ToList();
-
-                    return View(pendingClaims);
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
-                    return RedirectToAction("Error", "Home");
-                }
+                TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                return RedirectToAction("Error", "Home", new { code = 403 });
             }
 
+            var pendingClaims = _context.Claims
+                .Include(c => c.Lecturer)
+                .Include(c => c.StatusLogs) 
+                .Where(c => c.Status == "Pending")
+                .OrderByDescending(c => c.SubmittedAt)
+                .ToList();
 
-            // Displays detailed view for reviewing a specific claim.
-            public IActionResult Coordinator_ReviewClaim(int id)
+            return View(pendingClaims);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+            return RedirectToAction("Error", "Home");
+        }
+    }
+
+
+
+    // Displays detailed view for reviewing a specific claim.
+    public IActionResult Coordinator_ReviewClaim(int id)
             {
                 try
                 { 

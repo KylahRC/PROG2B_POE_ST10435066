@@ -46,14 +46,6 @@ public class ClaimDbContext : DbContext
                 //Ensures the table name matches the entity name (it kept adding an s to the end, no clue why but this fixed it).
                 modelBuilder.Entity<ClaimStatusLog>().ToTable("ClaimStatusLog");
 
-                //Links each status log to the coordinator who made the change.
-                //Enables traceability of who updated a claim, using EmployeeNumber as the join key (so lecturers and coords can see who did what so no drama).
-                modelBuilder.Entity<ClaimStatusLog>()
-                    .HasOne(log => log.ChangedByUser)
-                    .WithMany()
-                    .HasForeignKey(log => log.ChangedBy)
-                    .HasPrincipalKey(user => user.EmployeeNumber);
-
                 //Links each claim to the lecturer who submitted it.
                 //Establishes a relationship between claims and users, again using EmployeeNumber for consistency (its a pk, makes sense to use it). 
                 modelBuilder.Entity<Claim>()

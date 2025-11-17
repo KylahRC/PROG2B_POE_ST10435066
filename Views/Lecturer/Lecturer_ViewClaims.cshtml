@@ -1,10 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Claims System - Lecturer: View Claims";
-    
 }
-
 @model List<MonthlyClaimsSystem.Models.Claim>
-
 
 <style>
     .claim-card {
@@ -17,29 +14,12 @@
         color: #f1f1f1;
     }
 
-    .claim-approved {
-        border-left: 6px solid #28a745; /* green */
-    }
+    .claim-approved { border-left: 6px solid #28a745; }
+    .claim-pending { border-left: 6px solid #ffc107; }
+    .claim-denied { border-left: 6px solid #dc3545; }
 
-    .claim-pending {
-        border-left: 6px solid #ffc107; /* yellow */
-    }
-
-    .claim-denied {
-        border-left: 6px solid #dc3545; /* red */
-    }
-
-
-    .claim-card h4 {
-        color: black;
-        margin-bottom: 10px;
-    }
-
-    .claim-card .claim-meta {
-        color: dimgray;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
+    .claim-card h4 { color: black; margin-bottom: 10px; }
+    .claim-card .claim-meta { color: dimgray; font-size: 14px; margin-bottom: 10px; }
 
     .claim-card .status {
         font-weight: bold;
@@ -48,30 +28,15 @@
         display: inline-block;
     }
 
-    .status-approved {
-        background-color: #28a745;
-        color: white;
-    }
+    .status-approved { background-color: #28a745; color: white; }
+    .status-pending { background-color: #ffc107; color: black; }
+    .status-denied { background-color: #dc3545; color: white; }
 
-    .status-pending {
-        background-color: #ffc107;
-        color: black;
-    }
-
-    .status-denied {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .claim-actions a {
-        color: black;
-        background-color: white;
-        margin-bottom: 10px;
-        margin-right: 10px;
-    }
+    .system-log { font-style: italic; color: gray; }
+    .human-log { color: black; }
 
     .cancel-btn {
-        background-color: #6c757d; /* Bootstrap secondary */
+        background-color: #6c757d;
         color: white;
         padding: 10px 20px;
         border: none;
@@ -81,24 +46,15 @@
         font-weight: bold;
         transition: background-color 0.3s ease;
     }
+    .cancel-btn:hover { background-color: #5a6268; color: white; }
 
-        .cancel-btn:hover {
-            background-color: #5a6268;
-            color: white;
-        }
-
-
-    body {
-        background-color: #121212;
-        font-family: 'Segoe UI', sans-serif;
-    }
+    body { background-color: #121212; font-family: 'Segoe UI', sans-serif; }
 </style>
 
 @foreach (var claim in Model)
 {
     var statusClass = claim.Status.ToLower() switch
     {
-	    @* This code selects a CSS class based on the claim status *@
         "approved" => "status-approved",
         "pending" => "status-pending",
         "denied" => "status-denied",
@@ -107,50 +63,57 @@
 
     var cardClass = claim.Status.ToLower() switch
     {
-        @* This code selects a CSS class for the card border based on the claim status *@
         "approved" => "claim-approved",
         "pending" => "claim-pending",
         "denied" => "claim-denied",
         _ => "claim-pending"
     };
 
-
-
     <div class="claim-card @cardClass">
         <h4>Claim #@claim.ClaimId — @claim.ClaimType</h4>
 
-            <div class="claim-meta">
-                <strong>Month:</strong> @claim.ClaimMonth<br />
-                <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
-                <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
-                <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
+        <div class="claim-meta">
+            <strong>Month:</strong> @claim.ClaimMonth<br />
+            <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
+            <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
+            <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
 
-                    @if (!string.IsNullOrEmpty(claim.AttachmentPath))
-                    {
-                        <strong>Attachment:</strong><a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a><br />
-                    }
+            @if (!string.IsNullOrEmpty(claim.AttachmentPath))
+            {
+                <strong>Attachment:</strong>
+                <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a><br />
+            }
 
-                <strong>Notes:</strong> @claim.Notes
-
-                    @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
-                    {
-				        @* This code works by determining the name of the user who made the status change *@
-                        var name = log.ChangedByUser != null
-                        ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
-                        : log.ChangedBy;
+            <strong>Notes:</strong> @claim.Notes
 
 
-                        <li class="list-group-item">
-                            <strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+            @{
+                var latestLog = claim.StatusLogs.OrderByDescending(l => l.ChangeDate).FirstOrDefault();
+                if (latestLog != null && !string.IsNullOrWhiteSpace(latestLog.Reason))
+                {
+                    <p class="text-muted"><strong>System/Reason:</strong> @latestLog.Reason</p>
+                }
+            }
 
-                                @if (!string.IsNullOrWhiteSpace(log.Reason))
-                                {
-                                    <br />
-                                    <strong>Reason:</strong>@log.Reason
-                                }
-                        </li>
-                    }
-            </div>
+            <ul class="list-group mt-2">
+                @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+                {
+                    var cssClass = log.IsSystemChange ? "system-log" : "human-log";
+                    var actor = log.ChangedBy;
+
+                    <li class="list-group-item @cssClass">
+                        <strong>@log.NewStatus</strong> by @actor on @log.ChangeDate.ToString("f")
+
+                        @if (!string.IsNullOrWhiteSpace(log.Reason))
+                        {
+                            <br />
+                            <strong>Reason:</strong> @log.Reason
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+
         <div class="status @statusClass">@claim.Status</div>
     </div>
 }

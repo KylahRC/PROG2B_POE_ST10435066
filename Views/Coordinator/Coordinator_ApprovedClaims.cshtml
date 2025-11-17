@@ -36,7 +36,7 @@
     }
 
     .override-btn {
-        background-color: #28a745; 
+        background-color: #28a745;
         color: black;
         font-weight: bold;
         padding: 8px 16px;
@@ -45,6 +45,15 @@
         text-decoration: none;
         display: inline-block;
         transition: background-color 0.3s ease;
+    }
+
+    .system-log {
+        font-style: italic;
+        color: gray;
+    }
+
+    .human-log {
+        color: black;
     }
 
     body {
@@ -69,24 +78,31 @@
 
                 @if (!string.IsNullOrEmpty(claim.AttachmentPath))
                 {
-                    <strong>Attachment:</strong><a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a><br />
+                    <strong>Attachment:</strong>
+                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
+
+                    <br />
                 }
 
-                @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
-                {
-                    var name = log.ChangedByUser != null
-                    ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
-                    : log.ChangedBy;
+                <ul class="list-group mt-2">
+                    @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+                    {
+                        var cssClass = log.IsSystemChange ? "system-log" : "human-log";
+                        var actor = log.ChangedBy;
 
-                    <li class="list-group-item"><strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
+                        <li class="list-group-item @cssClass">
+                            <strong>@log.NewStatus</strong> by @actor on @log.ChangeDate.ToString("f")
 
-                        @if (!string.IsNullOrWhiteSpace(log.Reason))
-                        {
-                            <br />
-                            <strong>Reason:</strong>@log.Reason
-                        }
-                    </li>
-                }
+                            @if (!string.IsNullOrWhiteSpace(log.Reason))
+                            {
+                                <br />
+                                <strong>Reason:</strong>
+ 
+                                @log.Reason
+                            }
+                        </li>
+                    }
+                </ul>
             </div>
 
             <div class="mt-3">

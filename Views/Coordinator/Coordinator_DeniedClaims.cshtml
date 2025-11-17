@@ -3,7 +3,6 @@
 }
 @model List<MonthlyClaimsSystem.Models.Claim>
 
-
 <style>
     .claim-card {
         background-color: white;
@@ -15,16 +14,16 @@
         color: #f1f1f1;
     }
 
-    .claim-card h4 {
-        color: black;
-        margin-bottom: 10px;
-    }
+        .claim-card h4 {
+            color: black;
+            margin-bottom: 10px;
+        }
 
-    .claim-card .claim-meta {
-        color: dimgray;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
+        .claim-card .claim-meta {
+            color: dimgray;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
 
     .status {
         font-weight: bold;
@@ -48,6 +47,15 @@
         transition: background-color 0.3s ease;
     }
 
+    .system-log {
+        font-style: italic;
+        color: gray;
+    }
+
+    .human-log {
+        color: black;
+    }
+
     body {
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
@@ -65,27 +73,36 @@
                 <strong>Lecturer:</strong> @claim.Lecturer.Name.Substring(0, 1). @claim.Lecturer.Surname<br />
                 <strong>Month:</strong> @claim.ClaimMonth<br />
                 <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
-                <strong>Total:</strong> R @(claim.HoursWorked * claim.HourlyRate)<br />
+                <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
                 <strong>Notes:</strong> @claim.Notes
+
                 @if (!string.IsNullOrEmpty(claim.AttachmentPath))
                 {
-                    <strong>Attachment:</strong><a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a><br />
-                }
-                @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
-                {
-                    var name = log.ChangedByUser != null
-                    ? $"{log.ChangedByUser.Name.Substring(0, 1)}. {log.ChangedByUser.Surname}"
-                    : log.ChangedBy;
+                    <strong>Attachment:</strong>
+                    <a href="@claim.AttachmentPath" target="_blank">@claim.AttachmentName</a>
 
-                    <li class="list-group-item"><strong>@log.NewStatus</strong> by @name on @log.ChangeDate.ToString("f")
-
-                        @if (!string.IsNullOrWhiteSpace(log.Reason))
-                        {
-                            <br />
-                            <strong>Reason:</strong>@log.Reason
-                        }
-                    </li>
+                    <br />
                 }
+
+                <ul class="list-group mt-2">
+                    @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
+                    {
+                        var cssClass = log.IsSystemChange ? "system-log" : "human-log";
+                        var actor = log.ChangedBy;
+
+                        <li class="list-group-item @cssClass">
+                            <strong>@log.NewStatus</strong> by @actor on @log.ChangeDate.ToString("f")
+
+                            @if (!string.IsNullOrWhiteSpace(log.Reason))
+                            {
+                                <br />
+                                <strong>Reason:</strong>
+ 
+                                @log.Reason
+                            }
+                        </li>
+                    }
+                </ul>
             </div>
 
             <div class="mt-3">
