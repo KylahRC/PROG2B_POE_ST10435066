@@ -53,6 +53,8 @@ public class ClaimDbContext : DbContext
                     .WithMany()
                     .HasForeignKey(c => c.EmployeeNumber)
                     .HasPrincipalKey(u => u.EmployeeNumber);
+
+
             }
 
         #endregion Overrides of DbContext
