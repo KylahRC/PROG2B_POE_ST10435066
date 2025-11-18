@@ -168,7 +168,9 @@ public class LecturerController : Controller
             Directory.CreateDirectory(uploadsFolder); // Ensure folder exists
 
             // Generate a unique file name to avoid conflicts
-            var fileName = $"{Path.GetFileName(supportingFile.FileName)}_{Guid.NewGuid()}";
+            var originalName = Path.GetFileNameWithoutExtension(supportingFile.FileName);
+            var extension = Path.GetExtension(supportingFile.FileName);
+            var fileName = $"{originalName}_{Guid.NewGuid()}{extension}";
             var filePath = Path.Combine(uploadsFolder, fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
