@@ -10,7 +10,7 @@ Rate: R1200
 
 Document: ExamSetting_October_Thabo_PaperDraft.docx
 
-Notes: Claimed excessive hourly rate for exam setting
+Notes: Set exam draft for IT modules
 
 Approved? No
 

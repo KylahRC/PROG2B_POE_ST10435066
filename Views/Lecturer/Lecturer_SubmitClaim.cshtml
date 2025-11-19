@@ -61,53 +61,55 @@
 <div class="claim-form mt-5">
     <h2>Submit Monthly Claim</h2>
         <form asp-action="SubmitClaim" method="post" enctype="multipart/form-data">
-        <div class="form-group mb-3">
-            <label for="claimMonth">This claim is for the month of:</label>
-            <select id="claimMonth" name="claimMonth" class="form-control" required>
-                <option value="">-- Select Month --</option>
-                <option>January</option>
-                <option>February</option>
-                        <option>March</option>
-                        <option>April</option>
-                        <option>May</option>
-                        <option>June</option>
-                        <option>July</option>
-                        <option>August</option>
-                        <option>September</option>
-                        <option>October</option>
-                        <option>November</option>
-                        <option>December</option>
-                    </select>
-                </div>
+            <div class="form-group mb-3">
+                <label for="claimMonth">This claim is for the month of:</label>
+                <select id="claimMonth" name="claimMonth" class="form-control" required>
+                    <option value="">-- Select Month --</option>
+                    <option>January</option>
+                    <option>February</option>
+                            <option>March</option>
+                            <option>April</option>
+                            <option>May</option>
+                            <option>June</option>
+                            <option>July</option>
+                            <option>August</option>
+                            <option>September</option>
+                            <option>October</option>
+                            <option>November</option>
+                            <option>December</option>
+                        </select>
+                    </div>
 
-                <label for="claimType">I am claiming for the activity of:</label>
-                <select id="claimType" name="claimType" class="form-control" required>
-                    <option value="">-- Select Claim Type --</option>
-                    <!-- Paid categories -->
-                    <optgroup label="Paid Work">
-                        <option value="Marking">Lecture</option>
-                        <option value="Marking">Marking</option>
-                        <option value="Moderation">Moderation</option>
-                        <option value="ExamSetting">Exam Setting</option>
-                        <option value="CurriculumDevelopment">Curriculum Development</option>
-                        <option value="ResearchSupervision">Research Supervision</option>
-                        <option value="Workshops">Workshops/Seminars</option>
-                        <option value="Consultation">Consultation Hours (Formal)</option>
-                        <option value="SpecialProjects">Special Project (Paid)</option>
-                    </optgroup>
-                    <!-- Unpaid categories -->
-                    <optgroup label="Unpaid Work">
-                        <option value="Invigilation">Invigilation</option>
-                        <option value="Meeting">Department Meeting</option>
-                        <option value="Training">Training/Orientation</option>
-                        <option value="ContentCreation">Content Creation/Marketing</option>
-                        <option value="Outreach">Community Outreach</option>
-                        <option value="Admin">Administrative Work Outside Duties</option>
-                        <option value="SpecialProjects">Special Project (Unpaid)</option>
-                    </optgroup>
-                    <!-- Other -->
-                    <option value="Other">Other</option>
-                </select>
+                <div class="form-group mb-3">   
+                    <label for="claimType">I am claiming for the activity of:</label>
+                    <select id="claimType" name="claimType" class="form-control" required>
+                        <option value="">-- Select Claim Type --</option>
+                        <!-- Paid categories -->
+                        <optgroup label="Paid Work">
+                            <option value="Marking">Lecture</option>
+                            <option value="Marking">Marking</option>
+                            <option value="Moderation">Moderation</option>
+                            <option value="ExamSetting">Exam Setting</option>
+                            <option value="CurriculumDevelopment">Curriculum Development</option>
+                            <option value="ResearchSupervision">Research Supervision</option>
+                            <option value="Workshops">Workshops/Seminars</option>
+                            <option value="Consultation">Consultation Hours (Formal)</option>
+                            <option value="SpecialProjects">Special Project (Paid)</option>
+                        </optgroup>
+                        <!-- Unpaid categories -->
+                        <optgroup label="Unpaid Work">
+                            <option value="Invigilation">Invigilation</option>
+                            <option value="Meeting">Department Meeting</option>
+                            <option value="Training">Training/Orientation</option>
+                            <option value="ContentCreation">Content Creation/Marketing</option>
+                            <option value="Outreach">Community Outreach</option>
+                            <option value="Admin">Administrative Work Outside Duties</option>
+                            <option value="SpecialProjects">Special Project (Unpaid)</option>
+                        </optgroup>
+                        <!-- Other -->
+                        <option value="Other">Other</option>
+                    </select>
+		        </div>
 
                 <div class="form-group mb-3">
                     <label for="hoursWorked">I am claiming for this many hours: </label>

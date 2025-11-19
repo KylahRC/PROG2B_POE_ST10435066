@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MonthlyClaimsSystem.Models; // Or whatever namespace contains Claim
+using MonthlyClaimsSystem.Models; 
 
 public class LecturerController : Controller
 {
@@ -25,7 +25,6 @@ public class LecturerController : Controller
 
         #region Dashboard and Claim Views
 
-
             // Displays the lecturer dashboard view.
             public IActionResult Lecturer_Dashboard()
             {
@@ -33,12 +32,26 @@ public class LecturerController : Controller
                 {
                     var role = HttpContext.Session.GetString("Role");
                     var empNum = HttpContext.Session.GetString("EmployeeNumber");
+                    var rawUsername = HttpContext.Session.GetString("Username") ?? "Lecturer";
 
                     if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
                     {
                         TempData["ErrorMessage"] = "Access denied. Please log in first.";
                         return RedirectToAction("Error", "Home", new { code = 403 });
                     }
+
+                    string displayName = "Lecturer";
+                    if (!string.IsNullOrEmpty(rawUsername) && rawUsername.Length > 1)
+                    {
+                        // Remove the first character (initial)
+                        var surnamePart = rawUsername.Substring(1);
+
+                        // Capitalize the first letter of the surname
+                        displayName = char.ToUpper(surnamePart[0]) + surnamePart.Substring(1).ToLower();
+                    }
+
+                    ViewBag.Username = displayName;
+
                     return View();
                 }
                 catch (Exception ex)

@@ -38,6 +38,21 @@ public class CoordinatorController : Controller
                         TempData["ErrorMessage"] = "Access denied. Please log in first.";
                         return RedirectToAction("Error", "Home", new { code = 403 });
                     }
+
+                    var rawUsername = HttpContext.Session.GetString("Username") ?? "Coordinator";
+
+                    string displayName = "Coordinator";
+                    if (!string.IsNullOrEmpty(rawUsername) && rawUsername.Length > 1)
+                    {
+                        // Remove the first character (initial)
+                        var surnamePart = rawUsername.Substring(1);
+
+                        // Capitalize the first letter of the surname
+                        displayName = char.ToUpper(surnamePart[0]) + surnamePart.Substring(1).ToLower();
+                    }
+
+                    ViewBag.Username = displayName;
+
                     return View();
                 }
                 catch (Exception ex)

@@ -131,6 +131,7 @@ namespace MonthlyClaimsSystem.Controllers
                         // Store user details in session
                         HttpContext.Session.SetString("EmployeeNumber", user.EmployeeNumber);
                         HttpContext.Session.SetString("Role", user.Role);
+                        HttpContext.Session.SetString("Username", user.Username);
 
                         // Redirect to role-specific dashboard
                         return role switch

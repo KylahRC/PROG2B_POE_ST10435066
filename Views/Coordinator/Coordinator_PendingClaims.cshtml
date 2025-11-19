@@ -98,7 +98,7 @@
                 <strong>Hours:</strong> @claim.HoursWorked hrs at R @claim.HourlyRate/hr<br />
                 <strong>Total:</strong> R @(claim.HoursWorked* claim.HourlyRate)<br />
                 <strong>Submitted:</strong> @claim.SubmittedAt.ToString("f")<br />
-                <strong>Notes:</strong> @claim.Notes
+                <strong>Notes:</strong> @claim.Notes<br />
 
                 @if (!string.IsNullOrEmpty(claim.AttachmentPath))
                 {
