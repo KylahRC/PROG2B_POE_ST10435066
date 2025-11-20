@@ -68,42 +68,46 @@
         <p><strong>Total:</strong> R @(Model.HoursWorked * Model.HourlyRate)</p>
         <p><strong>Notes:</strong> @Model.Notes</p>
 
-            @if (isFirstReview)
-            {
-                <form method="post" asp-action="ApproveClaim">
-                    <input type="hidden" name="id" value="@Model.ClaimId" />
-                    <button type="submit" class="btn btn-success mt-3">Approve</button>
-                </form>
+        
+        @if (ViewBag.IsPending)
+        {
+            <!-- Show Approve/Deny buttons -->
+            <form asp-action="ApproveClaim" method="post">
+                <input type="hidden" name="id" value="@Model.ClaimId" />
+                <button type="submit" class="btn btn-success">Approve</button>
+            </form>
 
-                <form method="post" asp-action="DenyClaim">
-                    <input type="hidden" name="id" value="@Model.ClaimId" />
-                    <div class="form-group mt-3">
-                        <label for="reason">Reason for Denial:</label>
-                        <textarea name="reason" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-danger mt-2">Deny</button>
-                </form>
-            }
+            <form asp-action="DenyClaim" method="post">
+                <input type="hidden" name="id" value="@Model.ClaimId" />
+                <div class="form-group mt-2">
+                    <label for="reason">Reason (required for denial):</label>
+                    <input type="text" name="reason" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-danger">Deny</button>
+            </form>
+        }
+        else if (ViewBag.IsFinalised)
+        {
+            <!-- Show Override option -->
+            <form asp-action="OverrideClaimStatus" method="post">
+                <input type="hidden" name="id" value="@Model.ClaimId" />
+                <div class="form-group mt-2">
+                    <label for="reason">Reason (required for override):</label>
+                    <input type="text" name="reason" class="form-control" required />
+                </div>
+                <div class="form-group mt-2">
+                    <label for="newStatus">New Status:</label>
+                    <select name="newStatus" class="form-control" required>
+                        <option value="Approved">Approved</option>
+                        <option value="Denied">Denied</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-warning">Override Status</button>
+            </form>
+        }
 
-            @if (!isFirstReview)
-            {
-                <form method="post" asp-action="OverrideClaimStatus">
-                    <input type="hidden" name="id" value="@Model.ClaimId" />
-                    <div class="form-group mt-3">
-                        <label for="newStatus">New Status:</label>
-                        <select name="newStatus" class="form-control">
-                            <option value="Approved">Approved</option>
-                            <option value="Denied">Denied</option>
-                            <option value="Pending">Pending</option>
-                        </select>
-                    </div>
-                    <div class="form-group mt-2">
-                        <label for="reason">Reason for Override:</label>
-                        <textarea name="reason" class="form-control" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-warning mt-3">Override Status</button>
-                </form>
-            }
+
     <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_PendingClaims">Back</a>
 </div>
 

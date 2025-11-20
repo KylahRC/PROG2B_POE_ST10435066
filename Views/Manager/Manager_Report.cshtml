@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = "HR Manager Report";
+    var claims = ViewBag.Claims;
+}
+
+<style>
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+        color: #f1f1f1;
+    }
+
+    .report-container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    h2 {
+        background-color: #c82333;
+        color: white;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .totals .alert {
+        font-weight: bold;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .filter-section {
+        margin-bottom: 25px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+        .checkbox-group label {
+            background: #2c2c2c;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid #444;
+            color: #f1f1f1;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 6px;
+        }
+
+    .btn-primary {
+        background-color: #c82333;
+        border: none;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px 20px;
+    }
+
+        .btn-primary:hover {
+            background-color: #a71d2a;
+        }
+
+    table {
+        background-color: #2c2c2c;
+        color: #f1f1f1;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        table th {
+            background-color: #c82333;
+            color: white;
+        }
+
+        table td, table th {
+            padding: 10px;
+            text-align: center;
+            color: white
+        }
+
+    .filter-box {
+        background: #2c2c2c;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .filter-title {
+        font-weight: bold;
+        margin-bottom: 10px;
+        display: block;
+        color: #f1f1f1;
+    }
+
+    .checkbox-list {
+        display: flex;
+        flex-direction: column; /* stack vertically */
+        gap: 6px;
+    }
+
+        .checkbox-list div {
+            display: flex;
+            align-items: center;
+            color: #f1f1f1;
+        }
+
+</style>
+
+<div class="report-container mt-5">
+    <h2>HR Manager Report</h2>
+
+    <!-- Totals -->
+    <div class="row totals mb-4">
+        <div class="col-md-4">
+            <div class="alert alert-success">
+                Approved Total: R @ViewBag.ApprovedTotal
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-danger">
+                Denied Total: R @ViewBag.DeniedTotal
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-warning">
+                Pending Total: R @ViewBag.PendingTotal
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" asp-action="Manager_Report" class="filter-section">
+
+        <!-- Claim Type -->
+        <div class="row totals mb-4">
+        <div class="col-md-4">
+            <div class="form-group mb-3 filter-box">
+                <label class="filter-title">Claim Type:</label>
+                <div class="checkbox-list">
+                    <strong>Paid Work</strong>
+                    <div><input type="checkbox" name="claimType" value="Lecture" /> Lecture</div>
+                    <div><input type="checkbox" name="claimType" value="Marking" /> Marking</div>
+                    <div><input type="checkbox" name="claimType" value="Moderation" /> Moderation</div>
+                    <div><input type="checkbox" name="claimType" value="ExamSetting" /> Exam Setting</div>
+                    <div><input type="checkbox" name="claimType" value="CurriculumDevelopment" /> Curriculum Development</div>
+                    <div><input type="checkbox" name="claimType" value="ResearchSupervision" /> Research Supervision</div>
+                    <div><input type="checkbox" name="claimType" value="Workshops" /> Workshops/Seminars</div>
+                    <div><input type="checkbox" name="claimType" value="Consultation" /> Consultation Hours</div>
+                    
+
+                    <br /><strong>Unpaid Work</strong>
+                    <div><input type="checkbox" name="claimType" value="Invigilation" /> Invigilation</div>
+                    <div><input type="checkbox" name="claimType" value="Meeting" /> Department Meeting</div>
+                    <div><input type="checkbox" name="claimType" value="Training" /> Training/Orientation</div>
+                    <div><input type="checkbox" name="claimType" value="ContentCreation" /> Content Creation</div>
+                    <div><input type="checkbox" name="claimType" value="Outreach" /> Community Outreach</div>
+                    <div><input type="checkbox" name="claimType" value="Admin" /> Administrative Work</div>
+
+                    <br /><strong>Other</strong>
+                    <div><input type="checkbox" name="claimType" value="SpecialProjects" /> Special Project</div>
+                    <div><input type="checkbox" name="claimType" value="Other" /> Other</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Claim Month -->
+        <div class="col-md-4">
+            <div class="form-group mb-3 filter-box">
+                <label class="filter-title">Claim Month:</label>
+                <div class="checkbox-list">
+                    <div><input type="checkbox" name="claimMonth" value="January" /> January</div>
+                    <div><input type="checkbox" name="claimMonth" value="February" /> February</div>
+                    <div><input type="checkbox" name="claimMonth" value="March" /> March</div>
+                    <div><input type="checkbox" name="claimMonth" value="April" /> April</div>
+                    <div><input type="checkbox" name="claimMonth" value="May" /> May</div>
+                    <div><input type="checkbox" name="claimMonth" value="June" /> June</div>
+                    <div><input type="checkbox" name="claimMonth" value="July" /> July</div>
+                    <div><input type="checkbox" name="claimMonth" value="August" /> August</div>
+                    <div><input type="checkbox" name="claimMonth" value="September" /> September</div>
+                    <div><input type="checkbox" name="claimMonth" value="October" /> October</div>
+                    <div><input type="checkbox" name="claimMonth" value="November" /> November</div>
+                    <div><input type="checkbox" name="claimMonth" value="December" /> December</div>
+                </div>
+            </div>
+        </div>
+
+            <!-- Lecturer Filter -->
+            <div class="col-md-4">
+                <div class="form-group mb-3 filter-box">
+                    <label class="filter-title">Lecturers:</label>
+                    <div class="checkbox-list">
+                        @foreach (var lecturer in ViewBag.Lecturers)
+                        {
+                            <div>
+                                <input type="checkbox" name="employeeNumber" value="@lecturer.EmployeeNumber" />
+                                @lecturer.EmployeeNumber - @lecturer.Name @lecturer.Surname
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+        <!-- Status -->
+        
+            <div class="col-md-4">
+        <div class="form-group mb-3 filter-box">
+            <label class="filter-title">Status:</label>
+            <div class="checkbox-list">
+                <div><input type="checkbox" name="status" value="Approved" /> Approved</div>
+                <div><input type="checkbox" name="status" value="Denied" /> Denied</div>
+                <div><input type="checkbox" name="status" value="Pending" /> Pending</div>
+            </div>
+        </div>
+            </div>
+
+        
+        </div>
+
+        <button type="submit" class="btn btn-danger">Generate Report</button>
+        <a class="btn btn-secondary mt-4" asp-controller="Manager" asp-action="Manager_Dashboard">Back to Dashboard</a>
+    </form>
+
+
+    <!-- Results Table -->
+    <h4 class="mt-4">Results</h4>
+    @if (claims != null && claims.Count > 0)
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Lecturer</th>
+                    <th>Employee Number</th>
+                    <th>Month</th>
+                    <th>Type</th>
+                    <th>Hours</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var claim in claims)
+                {
+                    <tr>
+                        <td>@(claim.Lecturer != null ? claim.Lecturer.Name + " " + claim.Lecturer.Surname : "Unknown")</td>
+                        <td>@claim.EmployeeNumber</td>
+                        <td>@claim.ClaimMonth</td>
+                        <td>@claim.ClaimType</td>
+                        <td>@claim.HoursWorked</td>
+                        <td>@claim.HourlyRate</td>
+                        <td>@claim.Status</td>
+                        <td>@(claim.HoursWorked* claim.HourlyRate)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text-muted">No claims found for the selected filters.</p>
+    }
+
+
+

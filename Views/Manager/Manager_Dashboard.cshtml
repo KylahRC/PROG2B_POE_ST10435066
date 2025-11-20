@@ -2,8 +2,52 @@
     ViewData["Title"] = "HR Manager Dashboard";
 }
 
-<div class="container mt-5">
-    <h2>HR Manager Dashboard</h2>
-    <p>This is where HR Managers will do things in part 3.</p>
-    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Back to Login</a>
+<style>
+    .dashboard-box {
+        max-width: 600px;
+        margin: auto;
+        padding: 30px;
+        background-color: #f8f9fa;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+        .dashboard-box h2 {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-box .btn {
+            width: 100%;
+            margin: 10px 0;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+    body {
+        background-color: #121212;
+        font-family: 'Segoe UI', sans-serif;
+    }
+</style>
+
+<div class="dashboard-box mt-5">
+
+    <h2>Welcome, Manager @ViewBag.Username</h2>
+    <p>Select an option below:</p>
+
+    <a class="btn btn-danger" asp-controller="Manager" asp-action="Manager_Report">
+        Generate Reports
+    </a>
+
+    <a class="btn btn-danger" asp-controller="Manager" asp-action="Manager_GenerateInvoices">
+        Generate Invoices
+    </a>
+
+    <a class="btn btn-danger" asp-controller="Manager" asp-action="Manager_ChooseUserToEdit">
+		Edit Personal Details
+    </a>
+
+    <a class="btn btn-secondary mt-3" asp-controller="Home" asp-action="Index">
+        Back to Login
+    </a>
 </div>

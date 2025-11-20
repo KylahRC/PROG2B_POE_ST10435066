@@ -1,5 +1,7 @@
 using Azure;
 using Microsoft.EntityFrameworkCore;
+using MonthlyClaimsSystem.ViewModels;
+
 
 namespace MonthlyClaimsSystem
 {

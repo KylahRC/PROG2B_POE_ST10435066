@@ -158,47 +158,56 @@ public class CoordinatorController : Controller
 
     // Displays detailed view for reviewing a specific claim.
     public IActionResult Coordinator_ReviewClaim(int id)
+    {
+        try
+        {
+            var role = HttpContext.Session.GetString("Role");
+            var empNum = HttpContext.Session.GetString("EmployeeNumber");
+
+            if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
             {
-                try
-                { 
-                    var role = HttpContext.Session.GetString("Role");
-                    var empNum = HttpContext.Session.GetString("EmployeeNumber");
-
-                    if (string.IsNullOrEmpty(role) || role != "Coordinator" || string.IsNullOrEmpty(empNum))
-                    {
-                        TempData["ErrorMessage"] = "Access denied. Please log in first.";
-                        return RedirectToAction("Error", "Home", new { code = 403 });
-                    }
-                    // Fetch the claim along with lecturer and status logs
-                    var claim = _context.Claims
-                        .Include(c => c.Lecturer)
-                        .Include(c => c.StatusLogs)
-                        .FirstOrDefault(c => c.ClaimId == id);
-
-                    // Determine if this is the first review based on the presence of status logs
-                    bool isFirstReview = claim.StatusLogs == null || !claim.StatusLogs.Any();
-                    ViewBag.IsFirstReview = isFirstReview;
-
-                    // If claim not found, redirect with error
-                    if (claim == null)
-                    {
-                        TempData["Error"] = "Claim not found.";
-                        return RedirectToAction("Coordinator_PendingClaims");
-                    }
-
-                    return View(claim);
-                }
-                catch (Exception ex)
-                {
-                    TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
-                    return RedirectToAction("Error", "Home");
-                }
+                TempData["ErrorMessage"] = "Access denied. Please log in first.";
+                return RedirectToAction("Error", "Home", new { code = 403 });
             }
 
+            // Fetch the claim along with lecturer and status logs
+            var claim = _context.Claims
+                .Include(c => c.Lecturer)
+                .Include(c => c.StatusLogs)
+                .FirstOrDefault(c => c.ClaimId == id);
 
-            // Logs out the user by clearing cache and redirecting to home.
-            // This helps prevent back button access after logout.
-            public IActionResult Logout()
+            if (claim == null)
+            {
+                TempData["Error"] = "Claim not found.";
+                return RedirectToAction("Coordinator_PendingClaims");
+            }
+
+            // Determine if this is the first review
+            bool isFirstReview = claim.StatusLogs == null || !claim.StatusLogs.Any();
+            ViewBag.IsFirstReview = isFirstReview;
+
+            // Check current status
+            bool isPending = claim.Status == "Pending";
+            ViewBag.IsPending = isPending;
+
+            // If not pending, then it's already approved/denied ? only override allowed
+            bool isFinalised = claim.Status == "Approved" || claim.Status == "Denied";
+            ViewBag.IsFinalised = isFinalised;
+
+            return View(claim);
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Something went wrong: {ex.Message}";
+            return RedirectToAction("Error", "Home");
+        }
+    }
+
+
+
+    // Logs out the user by clearing cache and redirecting to home.
+    // This helps prevent back button access after logout.
+    public IActionResult Logout()
             {
                 Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
                 Response.Headers["Pragma"] = "no-cache";

@@ -1,0 +1,44 @@
+﻿@model MonthlyClaimsSystem.Models.User
+
+<div class="container mt-5">
+    <h2>Edit User Details</h2>
+    <form asp-action="Manager_SaveUserDetails" method="post">
+        <input type="hidden" asp-for="EmployeeNumber" />
+
+        <div class="form-group mb-3">
+            <label asp-for="EmployeeNumber"></label>
+            <input asp-for="EmployeeNumber" class="form-control" readonly />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Role"></label>
+            <select asp-for="Role" class="form-control">
+                <option value="Lecturer">Lecturer</option>
+                <option value="Coordinator">Coordinator</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label asp-for="Surname"></label>
+            <input asp-for="Surname" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+        <a class="btn btn-secondary mt-4" asp-controller="Manager" asp-action="Manager_Dashboard">Back to Dashboard</a>
+    </form>
+</div>

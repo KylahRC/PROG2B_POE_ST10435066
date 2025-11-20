@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Select User to Edit";
+}
+
+<div class="container mt-5">
+    <h2>Select a Lecturer/Coordinator to Edit</h2>
+    <form asp-action="Manager_ChooseUserToEdit" method="post">
+        <div class="form-group mb-3">
+            <label for="employeeNumber">Choose User:</label>
+            <select name="employeeNumber" asp-items="ViewBag.UsersDropdown" class="form-control"></select>
+        </div>
+        <button type="submit" class="btn btn-danger">Edit</button>
+        <a class="btn btn-secondary mt-4" asp-controller="Manager" asp-action="Manager_Dashboard">Back to Dashboard</a>
+    </form>
+</div>
