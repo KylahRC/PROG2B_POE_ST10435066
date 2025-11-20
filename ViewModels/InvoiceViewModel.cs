@@ -9,7 +9,6 @@ public class InvoiceViewModel
     public decimal GrandTotal { get; set; }
 }
 
-
 public class InvoiceLineItem
 {
     public string ClaimMonth { get; set; }
