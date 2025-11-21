@@ -69,6 +69,7 @@
         <p><strong>Notes:</strong> @Model.Notes</p>
 
         
+        
         @if (ViewBag.IsPending)
         {
             <!-- Show Approve/Deny buttons -->
@@ -85,6 +86,8 @@
                 </div>
                 <button type="submit" class="btn btn-danger">Deny</button>
             </form>
+        <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_PendingClaims">Back</a>
+       
         }
         else if (ViewBag.IsFinalised)
         {
@@ -105,9 +108,10 @@
                 </div>
                 <button type="submit" class="btn btn-warning">Override Status</button>
             </form>
+        <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_Dashboard">Back to dashboard</a>
         }
 
 
-    <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_PendingClaims">Back</a>
+    
 </div>
 

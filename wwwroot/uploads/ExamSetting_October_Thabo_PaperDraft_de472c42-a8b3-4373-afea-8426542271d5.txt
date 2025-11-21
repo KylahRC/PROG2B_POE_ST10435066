@@ -1,0 +1,20 @@
+Thabo
+
+Month: October
+
+Type: Exam Setting
+
+Hours: 6
+
+Rate: R1200
+
+Document: ExamSetting_October_Thabo_PaperDraft.docx
+
+Notes: Set exam draft for IT modules
+
+Approved? No
+
+Why: Rate exceeds policy limits
+
+Denied By: Kylah
+

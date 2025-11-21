@@ -112,16 +112,15 @@
                     @foreach (var log in claim.StatusLogs.OrderByDescending(l => l.ChangeDate))
                     {
                         var cssClass = log.IsSystemChange ? "system-log" : "human-log";
-                        var actor = log.ChangedBy;
 
                         <li class="list-group-item @cssClass">
-                            <strong>@log.NewStatus</strong> by @actor on @log.ChangeDate.ToString("f")
+                            <strong>@log.NewStatus</strong> by @log.ChangedBy on @log.ChangeDate.ToString("f")
 
                             @if (!string.IsNullOrWhiteSpace(log.Reason))
                             {
                                 <br />
                                 <strong>Reason:</strong>
- 
+
                                 @log.Reason
                             }
                         </li>

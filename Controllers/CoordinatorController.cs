@@ -90,6 +90,22 @@ public class CoordinatorController : Controller
                         .OrderByDescending(c => c.SubmittedAt)
                         .ToList();
 
+            
+                    // Enrich logs with coordinator names
+                    foreach (var claim in approvedClaims)
+                    {
+                        foreach (var log in claim.StatusLogs)
+                        {
+                            var user = _context.Users
+                                .FirstOrDefault(u => u.EmployeeNumber == log.ChangedBy);
+
+                            if (user != null)
+                            {
+                                log.ChangedBy = $"{user.Name} {user.Surname}";
+                            }
+                        }
+                    }
+
                     return View(approvedClaims);
                 }
                 catch (Exception ex)
@@ -119,6 +135,21 @@ public class CoordinatorController : Controller
                         .Where(c => c.Status == "Denied")
                         .OrderByDescending(c => c.SubmittedAt)
                         .ToList();
+
+                    // Enrich logs with coordinator names
+                    foreach (var claim in deniedClaims)
+                    {
+                        foreach (var log in claim.StatusLogs)
+                        {
+                            var user = _context.Users
+                                .FirstOrDefault(u => u.EmployeeNumber == log.ChangedBy);
+
+                            if (user != null)
+                            {
+                                log.ChangedBy = $"{user.Name} {user.Surname}";
+                            }
+                        }
+                    }
 
                     return View(deniedClaims);
                 }
@@ -153,6 +184,21 @@ public class CoordinatorController : Controller
                         .Where(c => c.Status == "Pending")
                         .OrderByDescending(c => c.SubmittedAt)
                         .ToList();
+
+                    // Enrich logs with coordinator names
+                    foreach (var claim in pendingClaims)
+                    {
+                        foreach (var log in claim.StatusLogs)
+                        {
+                            var user = _context.Users
+                                .FirstOrDefault(u => u.EmployeeNumber == log.ChangedBy);
+
+                            if (user != null)
+                            {
+                                log.ChangedBy = $"{user.Name} {user.Surname}";
+                            }
+                        }
+                    }
 
                     return View(pendingClaims);
                 }
@@ -330,7 +376,7 @@ public class CoordinatorController : Controller
                             _context.SaveChanges();
                         }
 
-                        return RedirectToAction("Coordinator_ReviewClaim", new { id });
+                        return RedirectToAction("Coordinator_Dashboard", new { id });
                     }
                     catch (Exception ex)
                     {

@@ -164,14 +164,30 @@ public class LecturerController : Controller
                         return RedirectToAction("Login", "Home");
                     }
 
-                    // Retrieve claims with status logs only (no ChangedByUser navigation)
-                    var claims = _context.Claims
-                        .Include(c => c.StatusLogs)
-                        .Where(c => c.EmployeeNumber == empNum)
-                        .OrderByDescending(c => c.SubmittedAt)
-                        .ToList();
+            // Retrieve claims with status logs
+            var claims = _context.Claims
+                .Include(c => c.StatusLogs)
+                .Where(c => c.EmployeeNumber == empNum)
+                .OrderByDescending(c => c.SubmittedAt)
+                .ToList();
 
-                    return View(claims);
+            // Enrich logs with coordinator names
+            foreach (var claim in claims)
+            {
+                foreach (var log in claim.StatusLogs)
+                {
+                    var user = _context.Users
+                        .FirstOrDefault(u => u.EmployeeNumber == log.ChangedBy);
+
+                    if (user != null)
+                    {
+                        log.ChangedBy = $"{user.Name} {user.Surname}";
+                    }
+                }
+            }
+
+
+            return View(claims);
                 }
                 catch (Exception ex)
                 {

@@ -8,6 +8,8 @@
         public string? NewStatus { get; set; }
         public DateTime ChangeDate { get; set; }
         public string? Reason { get; set; }
+
+
         public bool IsSystemChange { get; set; }
     }
 }
