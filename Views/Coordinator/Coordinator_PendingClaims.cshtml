@@ -76,10 +76,31 @@
         background-color: #121212;
         font-family: 'Segoe UI', sans-serif;
     }
+
+    .month-header {
+        background-color: #dc3545;
+        color: white;
+        padding: 9px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
 </style>
 
 <div class="container mt-5">
     <h2 class="mb-4 text-white">Pending Claims</h2>
+
+    @{
+    // Group claims by month name, newest month first
+    var claimsByMonth = Model
+        .GroupBy(c => c.ClaimMonth)
+        .OrderByDescending(g => g.Key); // assumes ClaimMonth is a string like "November"
+}
+
+@foreach (var monthGroup in claimsByMonth)
+{
+    <h2 class="month-header">@monthGroup.Key Claims</h2>
     @foreach (var claim in Model)
     {
         var statusClass = claim.Status.ToLower() switch
@@ -132,6 +153,7 @@
                 <a class="review-btn" asp-action="Coordinator_ReviewClaim" asp-route-id="@claim.ClaimId">Review Claim</a>
             </div>
         </div>
+    }
     }
     <a class="btn btn-secondary mt-4" asp-controller="Coordinator" asp-action="Coordinator_Dashboard">Back to Dashboard</a>
 </div>
