@@ -136,6 +136,19 @@ public class LecturerController : Controller
                     var role = HttpContext.Session.GetString("Role");
                     var empNum = HttpContext.Session.GetString("EmployeeNumber");
 
+     
+                    // Current month name (e.g., "November")
+                    var currentMonthName = DateTime.Now.ToString("MMMM");
+
+                    // Totals for the current month, scoped to this lecturer
+                    var approvedTotalForCurrentMonth = _context.Claims
+                        .Where(c => c.Status == "Approved"
+                                 && c.ClaimMonth == currentMonthName
+                                 && c.EmployeeNumber == empNum)
+                        .Sum(c => c.HoursWorked * c.HourlyRate);
+
+                    // Pass totals to the view using ViewBag
+                    ViewBag.ApprovedTotal = approvedTotalForCurrentMonth;
 
                     // Access control: Ensure user is logged in as Lecturer
                     if (string.IsNullOrEmpty(role) || role != "Lecturer" || string.IsNullOrEmpty(empNum))
